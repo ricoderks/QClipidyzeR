@@ -8,6 +8,7 @@ app_server <- function(input, output, session) {
   # Your application server logic
 
   r <- reactiveValues(all_data = NULL,
+                      clean_data = NULL,
                       sheet_names = c("Lipid Species Conc (nmolg)",
                                       "Lipid Species Composition (%)",
                                       "Lipid Class Conc (nmolg)",

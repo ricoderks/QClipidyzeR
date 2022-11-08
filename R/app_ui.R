@@ -54,7 +54,7 @@ app_ui <- function(request) {
         tabItems(
           tabItem(
             tabName = "welcome",
-            p("hi")
+            p("Work in progress......")
           ),
           tabItem(
             tabName = "file",

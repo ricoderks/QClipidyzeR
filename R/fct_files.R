@@ -14,6 +14,7 @@
 #' @importFrom dplyr mutate relocate n
 #' @importFrom purrr map2 reduce
 #' @importFrom readxl read_xlsx
+#' @importFrom rlang .data
 #'
 #' @noRd
 #'
@@ -22,8 +23,8 @@ read_files <- function(files = NULL, sheet_names = NULL) {
   all_data <- data.frame(sheet_name = sheet_names) |>
     dplyr::mutate(full_path = list(files$datapath),
                   file = list(files$name),
-                  data = purrr::map2(.x = full_path,
-                                     .y = sheet_name,
+                  data = purrr::map2(.x = .data$full_path,
+                                     .y = .data$sheet_name,
                                      .f = ~ purrr::map2(.x = .x,
                                                         .y = .y,
                                                         .f = ~ readxl::read_xlsx(path = .x,
@@ -41,4 +42,35 @@ read_files <- function(files = NULL, sheet_names = NULL) {
     )
 
   return(all_data)
+}
+
+#' @title Clean the data
+#'
+#' @description Clean the data by removing everything except pooled samples and samples
+#'
+#' @param data data.frame, containing all the data
+#'
+#' @details Only the pooled samples and samples are kept. Remove also all species
+#'     which are not present in all pooled samples.
+#'
+#' @return data.frame containing all cleaned data from all sheets
+#'
+#' @author Rico Derks
+#'
+#' @importFrom dplyr mutate relocate n filter select_if
+#' @importFrom purrr map
+#'
+#' @noRd
+#'
+clean_data <- function(data = NULL) {
+  # keep only pooled samples and samples
+  clean_data <- data |>
+    dplyr::mutate(clean_data = purrr::map(.x = data,
+                                          .f = ~ .x |>
+                                            dplyr::filter(GroupName %in% c("Pooled sample", "Samples"))))
+
+  # which features
+
+
+  return(clean_data)
 }

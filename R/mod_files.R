@@ -89,6 +89,10 @@ mod_files_server <- function(id, r){
         r$all_data <- read_files(files = my_files(),
                                sheet_names = r$sheet_names)
 
+        # clean the data, every column is kept (for now)
+        # only keep pooled samples and samples
+        # remove features which are NOT present in all pooled samples
+        r$clean_data <- clean_data(data = r$all_data)
 
       }
     })

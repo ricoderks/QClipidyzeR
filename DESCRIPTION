@@ -15,6 +15,7 @@ Imports:
     plotly,
     purrr,
     readxl,
+    rlang,
     sessioninfo,
     shiny (>= 1.7.3),
     stringr,
