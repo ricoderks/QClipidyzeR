@@ -34,7 +34,9 @@ read_files <- function(files = NULL, sheet_names = NULL) {
                                                           dplyr::mutate(batch = factor(.x),
                                                                         read_order = 1:dplyr::n()) |>
                                                           dplyr::relocate(batch, read_order, .after = SampleID)) |>
-                                       purrr::reduce(function(...) merge(...), all = TRUE)
+                                       purrr::reduce(function(...) merge(...), all = TRUE) |>
+                                       # convert to batch number
+                                       mutate(batch = as.factor(as.integer(batch)))
                   )
     )
 
