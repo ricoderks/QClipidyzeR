@@ -35,7 +35,7 @@ mod_files_ui <- function(id){
 #' @importFrom stringr str_extract
 #'
 #' @noRd
-mod_files_server <- function(id){
+mod_files_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -94,7 +94,7 @@ mod_files_server <- function(id){
       }
     })
 
-    all_data <- reactive({
+    r$all_data <- reactive({
       req(my_files)
 
       if(!is.null(my_files())) {
@@ -111,7 +111,8 @@ mod_files_server <- function(id){
       req(my_files)
 
       # print(my_files()$name)
-      class(all_data())
+      # print(class(r$all_data()))
+      NULL
     })
   })
 }
