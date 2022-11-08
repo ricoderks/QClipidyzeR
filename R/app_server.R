@@ -13,7 +13,13 @@ app_server <- function(input, output, session) {
                                       "Lipid Class Conc (nmolg)",
                                       "Lipid Class Composition (%)",
                                       "Fatty Acid Conc (nmolg)",
-                                      "Fatty Acid Composition (%)"))
+                                      "Fatty Acid Composition (%)"),
+                      sheet_names_short = c("Species conc.",
+                                            "Species comp.",
+                                            "Classes conc.",
+                                            "Classes comp.",
+                                            "FA conc.",
+                                            "FA comp."))
 
   # import files
   mod_files_server(id = "file",
@@ -22,6 +28,10 @@ app_server <- function(input, output, session) {
   # show the data
   mod_data_server(id = "data",
                   r = r)
+
+  # show the plots
+  mod_plots_server(id = "plots",
+                   r = r)
 
   # help module
   mod_help_server(id = "help")

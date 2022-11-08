@@ -2,6 +2,7 @@
 
 export(run_app)
 import(bs4Dash)
+import(plotly)
 import(shiny)
 importFrom(DT,DTOutput)
 importFrom(DT,renderDT)

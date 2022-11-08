@@ -31,6 +31,9 @@ app_ui <- function(request) {
           menuItem(text = "Data",
                    tabName = "data",
                    icon = icon("table")),
+          menuItem(text = "Plots",
+                   tabName = "plots",
+                   icon = icon("chart-simple")),
           menuItem(text = "Help",
                    tabName = "main_help",
                    icon = icon("circle-info"),
@@ -60,6 +63,10 @@ app_ui <- function(request) {
           tabItem(
             tabName = "data",
             mod_data_ui(id = "data")
+          ),
+          tabItem(
+            tabName = "plots",
+            mod_plots_ui(id = "plots")
           ),
           tabItem(
             tabName = "help",

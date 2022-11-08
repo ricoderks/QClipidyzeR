@@ -12,6 +12,7 @@ Imports:
     dplyr,
     DT,
     golem (>= 0.3.5),
+    plotly,
     purrr,
     readxl,
     sessioninfo,
