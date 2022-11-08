@@ -23,6 +23,7 @@ attachment::att_amend_desc()
 golem::add_module(name = "help", with_test = FALSE) # Name of the module
 golem::add_module(name = "about", with_test = FALSE) # Name of the module
 golem::add_module(name = "files", with_test = FALSE) # Name of the module
+golem::add_module(name = "data", with_test = FALSE) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
