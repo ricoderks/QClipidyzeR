@@ -28,6 +28,8 @@ app_ui <- function(request) {
           menuItem(text = "File",
                    tabName = "file",
                    icon = icon("file-excel")),
+          menuItem(text = "Data",
+                   tabName = "data"),
           menuItem(text = "Help",
                    tabName = "main_help",
                    icon = icon("circle-info"),
@@ -51,7 +53,11 @@ app_ui <- function(request) {
             p("hi")
           ),
           tabItem(
-            tabName = "file"
+            tabName = "file",
+            mod_files_ui("file")
+          ),
+          tabItem(
+            tabName = "data"
           ),
           tabItem(
             tabName = "help",
