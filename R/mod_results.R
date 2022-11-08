@@ -30,11 +30,13 @@ mod_results_server <- function(id, r){
         id = "plot_tabset",
         tabPanel(
           title = r$sheet_names_short[1],
-          plotlyOutput(outputId = ns("plot_sheet1"))
+          plotlyOutput(outputId = ns("plot_sheet1")),
+          plotlyOutput(outputId = ns("scores_sheet1"))
         ),
         tabPanel(
           title = r$sheet_names_short[2],
-          plotlyOutput(outputId = ns("plot_sheet2"))
+          plotlyOutput(outputId = ns("plot_sheet2")),
+          plotlyOutput(outputId = ns("scores_sheet2"))
         ),
         tabPanel(
           title = r$sheet_names_short[3],
@@ -46,15 +48,18 @@ mod_results_server <- function(id, r){
         ),
         tabPanel(
           title = r$sheet_names_short[5],
-          plotlyOutput(outputId = ns("plot_sheet5"))
+          plotlyOutput(outputId = ns("plot_sheet5")),
+          plotlyOutput(outputId = ns("scores_sheet5"))
         ),
         tabPanel(
           title = r$sheet_names_short[6],
-          plotlyOutput(outputId = ns("plot_sheet6"))
+          plotlyOutput(outputId = ns("plot_sheet6")),
+          plotlyOutput(outputId = ns("scores_sheet6"))
         )
       )
     })
 
+    ##### RSD stuff #####
     output$plot_sheet1 <- renderPlotly({
       req(r$clean_data)
 
@@ -128,6 +133,55 @@ mod_results_server <- function(id, r){
       # create the plot
       create_rsd_hist(data = plot_data)
     })
+    #####################
+
+    ##### PCA stuff #####
+    output$scores_sheet1 <- renderPlotly({
+      req(r$clean_data)
+
+      # do pca analysis
+      mod <- do_pca(data = r$clean_data$clean_data[[1]],
+                          meta_data = r$meta_columns)
+
+      scores_plot(model = mod,
+                  meta_data = r$clean_data$clean_data[[1]][, r$meta_columns])
+    })
+
+    output$scores_sheet2 <- renderPlotly({
+      req(r$clean_data)
+
+      # do pca analysis
+      mod <- do_pca(data = r$clean_data$clean_data[[2]],
+                    meta_data = r$meta_columns)
+
+      scores_plot(model = mod,
+                  meta_data = r$clean_data$clean_data[[2]][, r$meta_columns])
+    })
+
+    output$scores_sheet5 <- renderPlotly({
+      req(r$clean_data)
+
+      # do pca analysis
+      mod <- do_pca(data = r$clean_data$clean_data[[5]],
+                    meta_data = r$meta_columns)
+
+      scores_plot(model = mod,
+                  meta_data = r$clean_data$clean_data[[5]][, r$meta_columns])
+    })
+
+    output$scores_sheet6 <- renderPlotly({
+      req(r$clean_data)
+
+      # do pca analysis
+      mod <- do_pca(data = r$clean_data$clean_data[[6]],
+                    meta_data = r$meta_columns)
+
+      scores_plot(model = mod,
+                  meta_data = r$clean_data$clean_data[[6]][, r$meta_columns])
+    })
+
+    #####################
+
 
   }) # end server module
 }
