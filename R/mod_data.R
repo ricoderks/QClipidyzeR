@@ -13,7 +13,6 @@ mod_data_ui <- function(id){
   ns <- NS(id)
   tagList(
     uiOutput(outputId = ns("data_tabs"))
-    # DT::DTOutput(outputId = ns("table1"))
   )
 }
 
@@ -31,27 +30,27 @@ mod_data_server <- function(id, r){
       bs4Dash::tabsetPanel(
         id = "data_tabset",
         tabPanel(
-          title = r$sheet_names[1],
+          title = r$sheet_names_short[1],
           DT::DTOutput(outputId = ns("data_sheet1"))
         ),
         tabPanel(
-          title = r$sheet_names[2],
+          title = r$sheet_names_short[2],
           DT::DTOutput(outputId = ns("data_sheet2"))
         ),
         tabPanel(
-          title = r$sheet_names[3],
+          title = r$sheet_names_short[3],
           DT::DTOutput(outputId = ns("data_sheet3"))
         ),
         tabPanel(
-          title = r$sheet_names[4],
+          title = r$sheet_names_short[4],
           DT::DTOutput(outputId = ns("data_sheet4"))
         ),
         tabPanel(
-          title = r$sheet_names[5],
+          title = r$sheet_names_short[5],
           DT::DTOutput(outputId = ns("data_sheet5"))
         ),
         tabPanel(
-          title = r$sheet_names[6],
+          title = r$sheet_names_short[6],
           DT::DTOutput(outputId = ns("data_sheet6"))
         )
       )
