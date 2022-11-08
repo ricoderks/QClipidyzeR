@@ -22,9 +22,9 @@ The goal of `QClipidyzeR` is to have a quick look at the quality of a Lipidyzer 
 
 ## Installation
 
-You can install the development version of QClipidyzeR like so:
+You can install the development version of `QClipidyzeR` like so:
 
-``` r
+```{r eval=FALSE}
 remotes::install_github("ricoderks/QClipidyzeR")
 ```
 

@@ -11,7 +11,7 @@ Lipidyzer study.
 
 ## Installation
 
-You can install the development version of QClipidyzeR like so:
+You can install the development version of `QClipidyzeR` like so:
 
 ``` r
 remotes::install_github("ricoderks/QClipidyzeR")
