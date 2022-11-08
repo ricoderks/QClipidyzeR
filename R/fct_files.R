@@ -20,22 +20,22 @@
 read_files <- function(files = NULL, sheet_names = NULL) {
 
   all_data <- data.frame(sheet_name = sheet_names) |>
-    mutate(full_path = list(files$datapath),
-           file = list(files$name),
-           data = map2(.x = full_path,
-                       .y = sheet_name,
-                       .f = ~ map2(.x = .x,
-                                   .y = .y,
-                                   .f = ~ read_xlsx(path = .x,
-                                                    sheet = .y,
-                                                    col_names = TRUE,
-                                                    na = ".") |>
-                                     # add batch information
-                                     mutate(batch = factor(.x),
-                                            read_order = 1:n()) |>
-                                     relocate(batch, read_order, .after = SampleID)) |>
-                         reduce(function(...) merge(...), all = TRUE)
-           )
+    dplyr::mutate(full_path = list(files$datapath),
+                  file = list(files$name),
+                  data = purrr::map2(.x = full_path,
+                                     .y = sheet_name,
+                                     .f = ~ purrr::map2(.x = .x,
+                                                        .y = .y,
+                                                        .f = ~ readxl::read_xlsx(path = .x,
+                                                                                 sheet = .y,
+                                                                                 col_names = TRUE,
+                                                                                 na = ".") |>
+                                                          # add batch information
+                                                          dplyr::mutate(batch = factor(.x),
+                                                                        read_order = 1:dplyr::n()) |>
+                                                          dplyr::relocate(batch, read_order, .after = SampleID)) |>
+                                       purrr::reduce(function(...) merge(...), all = TRUE)
+                  )
     )
 
   return(all_data)
