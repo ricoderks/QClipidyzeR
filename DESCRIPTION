@@ -1,13 +1,17 @@
 Package: QClipidyzeR
 Title: QC lipidyzer data
 Version: 0.0.0.9000
-Authors@R: person('Rico', 'Derks', email = 'r.j.e.derks@lumc.nl', role = c('cre', 'aut'))
-Description: Have a quick look at lipidyzer data and determine how well the study was measured.
+Authors@R: 
+    person("Rico", "Derks", , "r.j.e.derks@lumc.nl", role = c("cre", "aut"))
+Description: Have a quick look at lipidyzer data and determine how well
+    the study was measured.
 License: GPL (>= 3)
 Imports: 
+    bs4Dash,
     config (>= 0.3.1),
     golem (>= 0.3.5),
+    sessioninfo,
     shiny (>= 1.7.3)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1

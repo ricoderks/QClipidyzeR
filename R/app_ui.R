@@ -3,14 +3,65 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import bs4Dash
+#'
 #' @noRd
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    fluidPage(
-      h1("QClipidyzeR")
+    dashboardPage(
+      #### Header
+      dashboardHeader(
+        title = paste0("QClipidyzeR | v", packageVersion(pkg = "QClipidyzeR"))
+      ),
+
+      #### Sidebarmenu
+      bs4DashSidebar(
+        skin = "light",
+        sidebarMenu(
+          menuItem(text = "Welcome",
+                   tabName = "welcome",
+                   icon = icon("home")),
+          menuItem(text = "File",
+                   tabName = "file",
+                   icon = icon("file-excel")),
+          menuItem(text = "Help",
+                   tabName = "main_help",
+                   icon = icon("circle-info"),
+                   menuSubItem(
+                     text = "help",
+                     tabName = "help"
+                   ),
+                   menuSubItem(
+                     text = "About",
+                     tabName = "about"
+                   )
+          )
+        )
+      ),
+
+      #### Body
+      bs4DashBody(
+        tabItems(
+          tabItem(
+            tabName = "welcome",
+            p("hi")
+          ),
+          tabItem(
+            tabName = "file"
+          ),
+          tabItem(
+            tabName = "help",
+            mod_help_ui("help")
+          ),
+          tabItem(
+            tabName = "about",
+            mod_about_ui("about")
+          )
+        )
+      )
     )
   )
 }
