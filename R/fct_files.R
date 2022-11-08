@@ -78,7 +78,7 @@ clean_data <- function(data = NULL) {
     names(na_pooled_idx) <- NULL
 
     # correct  for meta data
-    # na_pooled_idx[1:3] <- 0
+    # na_pooled_idx[1:4] <- 0
     # convert to TRUE / FALSE, keep = TRUE, for now assuming that the meta data doesn't contain any NA's
     na_pooled_idx <- na_pooled_idx == 0
 

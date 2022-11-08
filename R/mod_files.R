@@ -5,7 +5,7 @@
 #' @param id,r,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd
-#'
+#' @importFrom stringr str_detect
 #' @importFrom shiny NS tagList
 mod_files_ui <- function(id){
   ns <- NS(id)
@@ -87,13 +87,16 @@ mod_files_server <- function(id, r){
       if(!is.null(my_files())) {
         # read all the files
         r$all_data <- read_files(files = my_files(),
-                               sheet_names = r$sheet_names)
+                                 sheet_names = r$sheet_names)
 
         # clean the data, every column is kept (for now)
         # only keep pooled samples and samples
         # remove features which are NOT present in all pooled samples
         r$clean_data <- clean_data(data = r$all_data)
 
+        # determine the meta data columns
+        r$num_meta <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
+                                        pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
       }
     })
 
