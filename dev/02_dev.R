@@ -24,12 +24,13 @@ golem::add_module(name = "help", with_test = FALSE) # Name of the module
 golem::add_module(name = "about", with_test = FALSE) # Name of the module
 golem::add_module(name = "files", with_test = FALSE) # Name of the module
 golem::add_module(name = "data", with_test = FALSE) # Name of the module
-golem::add_module(name = "plots", with_test = FALSE) # Name of the module
+golem::add_module(name = "results", with_test = FALSE) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
 golem::add_fct("files", with_test = TRUE)
-golem::add_utils("helpers", with_test = TRUE)
+golem::add_fct("plots", with_test = TRUE)
+# golem::add_utils("helpers", with_test = TRUE)
 
 ## External resources
 ## Creates .js and .css files at inst/app/www

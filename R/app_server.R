@@ -9,7 +9,7 @@ app_server <- function(input, output, session) {
 
   r <- reactiveValues(all_data = NULL,
                       clean_data = NULL,
-                      num_meta = NULL,
+                      meta_columns = NULL,
                       sheet_names = c("Lipid Species Conc (nmolg)",
                                       "Lipid Species Composition (%)",
                                       "Lipid Class Conc (nmolg)",
@@ -32,8 +32,8 @@ app_server <- function(input, output, session) {
                   r = r)
 
   # show the plots
-  mod_plots_server(id = "plots",
-                   r = r)
+  mod_results_server(id = "results",
+                     r = r)
 
   # help module
   mod_help_server(id = "help")

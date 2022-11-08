@@ -95,8 +95,8 @@ mod_files_server <- function(id, r){
         r$clean_data <- clean_data(data = r$all_data)
 
         # determine the meta data columns
-        r$num_meta <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
-                                        pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
+        r$meta_columns <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
+                                            pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
       }
     })
 

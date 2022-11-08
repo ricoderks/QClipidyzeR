@@ -31,8 +31,8 @@ app_ui <- function(request) {
           menuItem(text = "Data",
                    tabName = "data",
                    icon = icon("table")),
-          menuItem(text = "Plots",
-                   tabName = "plots",
+          menuItem(text = "Results",
+                   tabName = "results",
                    icon = icon("chart-simple")),
           menuItem(text = "Help",
                    tabName = "main_help",
@@ -65,8 +65,8 @@ app_ui <- function(request) {
             mod_data_ui(id = "data")
           ),
           tabItem(
-            tabName = "plots",
-            mod_plots_ui(id = "plots")
+            tabName = "results",
+            mod_results_ui(id = "results")
           ),
           tabItem(
             tabName = "help",
