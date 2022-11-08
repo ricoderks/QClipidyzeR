@@ -70,7 +70,20 @@ clean_data <- function(data = NULL) {
                                             dplyr::filter(GroupName %in% c("Pooled sample", "Samples"))))
 
   # which features
+  for(a in 1:6) {
+    data_df <- clean_data$clean_data[[a]]
+    na_pooled_idx <- apply(data_df[data_df$GroupName == "Pooled sample", ], 2, function(x) {
+      sum(is.na(x))
+    })
+    names(na_pooled_idx) <- NULL
 
+    # correct  for meta data
+    # na_pooled_idx[1:3] <- 0
+    # convert to TRUE / FALSE, keep = TRUE, for now assuming that the meta data doesn't contain any NA's
+    na_pooled_idx <- na_pooled_idx == 0
+
+    clean_data$clean_data[[a]] <- data_df[, na_pooled_idx]
+  }
 
   return(clean_data)
 }
