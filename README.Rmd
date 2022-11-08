@@ -32,7 +32,7 @@ remotes::install_github("ricoderks/QClipidyzeR")
 
 Run the app with:
 
-```{r run}
+```{r run, eval=FALSE}
 QClipidyzeR::run_app()
 ```
 
