@@ -4,6 +4,7 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @import bs4Dash
+#' @importFrom utils packageVersion
 #'
 #' @noRd
 app_ui <- function(request) {
