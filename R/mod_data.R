@@ -68,7 +68,7 @@ mod_data_server <- function(id, r){
       }
     },
     options = list(pageLength = 20,
-                   dom = "tp")
+                   dom = "tpr")
     )
 
     output$data_sheet2 <- DT::renderDT({
@@ -81,7 +81,7 @@ mod_data_server <- function(id, r){
       }
     },
     options = list(pageLength = 20,
-                   dom = "tp")
+                   dom = "tpr")
     )
 
     output$data_sheet3 <- DT::renderDT({
@@ -94,7 +94,7 @@ mod_data_server <- function(id, r){
       }
     },
     options = list(pageLength = 20,
-                   dom = "tp")
+                   dom = "tpr")
     )
 
     output$data_sheet4 <- DT::renderDT({
@@ -107,7 +107,7 @@ mod_data_server <- function(id, r){
       }
     },
     options = list(pageLength = 20,
-                   dom = "tp")
+                   dom = "tpr")
     )
 
     output$data_sheet5 <- DT::renderDT({
@@ -120,7 +120,7 @@ mod_data_server <- function(id, r){
       }
     },
     options = list(pageLength = 20,
-                   dom = "tp")
+                   dom = "tpr")
     )
 
     output$data_sheet6 <- DT::renderDT({
@@ -133,7 +133,7 @@ mod_data_server <- function(id, r){
       }
     },
     options = list(pageLength = 20,
-                   dom = "tp")
+                   dom = "tpr")
     )
 
   }) # end module server
