@@ -61,7 +61,7 @@ mod_data_server <- function(id, r){
       req(r$all_data)
 
       if(!is.null(r$all_data)) {
-        show_data <- r$all_data()$data[[1]]
+        show_data <- r$all_data$data[[1]]
 
         show_data
       }
@@ -74,7 +74,7 @@ mod_data_server <- function(id, r){
       req(r$all_data)
 
       if(!is.null(r$all_data)) {
-        show_data <- r$all_data()$data[[2]]
+        show_data <- r$all_data$data[[2]]
 
         show_data
       }
@@ -87,7 +87,7 @@ mod_data_server <- function(id, r){
       req(r$all_data)
 
       if(!is.null(r$all_data)) {
-        show_data <- r$all_data()$data[[3]]
+        show_data <- r$all_data$data[[3]]
 
         show_data
       }
@@ -100,7 +100,7 @@ mod_data_server <- function(id, r){
       req(r$all_data)
 
       if(!is.null(r$all_data)) {
-        show_data <- r$all_data()$data[[4]]
+        show_data <- r$all_data$data[[4]]
 
         show_data
       }
@@ -113,7 +113,7 @@ mod_data_server <- function(id, r){
       req(r$all_data)
 
       if(!is.null(r$all_data)) {
-        show_data <- r$all_data()$data[[5]]
+        show_data <- r$all_data$data[[5]]
 
         show_data
       }
@@ -126,7 +126,7 @@ mod_data_server <- function(id, r){
       req(r$all_data)
 
       if(!is.null(r$all_data)) {
-        show_data <- r$all_data()$data[[6]]
+        show_data <- r$all_data$data[[6]]
 
         show_data
       }

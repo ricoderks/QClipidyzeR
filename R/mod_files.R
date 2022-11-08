@@ -80,15 +80,16 @@ mod_files_server <- function(id, r){
       }
     })
 
-    r$all_data <- reactive({
+    # r$all_data <- reactive({
+    observe({
       req(my_files)
 
       if(!is.null(my_files())) {
         # read all the files
-        all_data <- read_files(files = my_files(),
+        r$all_data <- read_files(files = my_files(),
                                sheet_names = r$sheet_names)
 
-        return(all_data)
+
       }
     })
 
