@@ -39,20 +39,6 @@ mod_files_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    # sheet_names <- reactiveVal(c("Lipid Species Concentrations",
-    #                              "Lipid Species Composition",
-    #                              "Lipid Class Concentration",
-    #                              "Lipid Class Composition",
-    #                              "Fatty Acid Concentration",
-    #                              "Fatty Acid Composition"))
-
-    sheet_names <- reactiveVal(c("Lipid Species Conc (nmolg)",
-                                 "Lipid Species Composition (%)",
-                                 "Lipid Class Conc (nmolg)",
-                                 "Lipid Class Composition (%)",
-                                 "Fatty Acid Conc (nmolg)",
-                                 "Fatty Acid Composition (%)"))
-
     # sort the file names
     my_files <- reactive({
       req(input$import_files)
@@ -100,7 +86,7 @@ mod_files_server <- function(id, r){
       if(!is.null(my_files())) {
         # read all the files
         all_data <- read_files(files = my_files(),
-                               sheet_names = sheet_names())
+                               sheet_names = r$sheet_names)
 
         return(all_data)
       }
