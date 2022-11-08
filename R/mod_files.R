@@ -2,7 +2,7 @@
 #'
 #' @description A shiny Module.
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param id,r,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd
 #'
