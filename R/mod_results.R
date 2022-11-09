@@ -37,31 +37,18 @@ mod_results_server <- function(id, r){
               plotlyOutput(outputId = ns("plot_sheet1"))
             ),
           ),
-          fluidRow(
-            bs4Dash::box(
-              width = 5,
-              collapsible = FALSE,
-              headerBorder = FALSE,
-              plotlyOutput(outputId = ns("scores_sheet1"))
-            ),
-            bs4Dash::box(
-              width = 5,
-              collapsible = FALSE,
-              headerBorder = FALSE,
-              plotlyOutput(outputId = ns("loadings_sheet1"))
-            ),
-            bs4Dash::box(
-              width = 2,
-              collapsible = FALSE,
-              headerBorder = FALSE,
-              plotOutput(outputId = ns("sumfit_sheet1"))
-            )
-          )
+          mod_pca_ui(id = ns("pca_sheet1"))
         ),
         tabPanel(
           title = r$sheet_names_short[2],
-          plotlyOutput(outputId = ns("plot_sheet2")),
-          plotlyOutput(outputId = ns("scores_sheet2"))
+          fluidRow(
+            bs4Dash::box(
+              collapsible = FALSE,
+              headerBorder = FALSE,
+              plotlyOutput(outputId = ns("plot_sheet2"))
+            ),
+          ),
+          mod_pca_ui(id = ns("pca_sheet2"))
         ),
         tabPanel(
           title = r$sheet_names_short[3],
@@ -73,159 +60,99 @@ mod_results_server <- function(id, r){
         ),
         tabPanel(
           title = r$sheet_names_short[5],
-          plotlyOutput(outputId = ns("plot_sheet5")),
-          plotlyOutput(outputId = ns("scores_sheet5"))
+          fluidRow(
+            bs4Dash::box(
+              collapsible = FALSE,
+              headerBorder = FALSE,
+              plotlyOutput(outputId = ns("plot_sheet5"))
+            ),
+          ),
+          mod_pca_ui(id = ns("pca_sheet5"))
         ),
         tabPanel(
           title = r$sheet_names_short[6],
-          plotlyOutput(outputId = ns("plot_sheet6")),
-          plotlyOutput(outputId = ns("scores_sheet6"))
+          fluidRow(
+            bs4Dash::box(
+              collapsible = FALSE,
+              headerBorder = FALSE,
+              plotlyOutput(outputId = ns("plot_sheet6"))
+            ),
+          ),
+          mod_pca_ui(id = ns("pca_sheet6"))
         )
       )
     })
 
     ##### RSD stuff #####
     output$plot_sheet1 <- renderPlotly({
-      req(r$clean_data)
-
-      # calculate all RSD values
-      plot_data <- calc_rsd(data = r$clean_data$clean_data[[1]],
-                            meta_data = r$meta_columns,
-                            lipid_class = TRUE)
+      req(r$rsd_data)
 
       # create the plot
-      create_rsd_hist(data = plot_data)
+      create_rsd_hist(data = r$rsd_data[[1]])
     })
 
     output$plot_sheet2 <- renderPlotly({
-      req(r$clean_data)
-
-      # calculate all RSD values
-      plot_data <- calc_rsd(data = r$clean_data$clean_data[[2]],
-                            meta_data = r$meta_columns,
-                            lipid_class = TRUE)
+      req(r$rsd_data)
 
       # create the plot
-      create_rsd_hist(data = plot_data)
+      create_rsd_hist(data = r$rsd_data[[2]])
     })
 
     output$table_sheet3 <- DT::renderDT({
-      req(r$clean_data)
+      req(r$rsd_data)
 
-      # calculate all RSD values
-      table_data <- calc_rsd(data = r$clean_data$clean_data[[3]],
-                             meta_data = r$meta_columns,
-                             lipid_class = FALSE)
-
-      table_DT <- create_rsd_table(data = table_data)
+      table_DT <- create_rsd_table(data = r$rsd_data[[3]])
 
       table_DT
     })
 
     output$table_sheet4 <- DT::renderDT({
-      req(r$clean_data)
+      req(r$rsd_data)
 
-      # calculate all RSD values
-      table_data <- calc_rsd(data = r$clean_data$clean_data[[4]],
-                             meta_data = r$meta_columns,
-                             lipid_class = FALSE)
-
-      table_DT <- create_rsd_table(data = table_data)
+      table_DT <- create_rsd_table(data = r$rsd_data[[4]])
 
       table_DT
     })
 
     output$plot_sheet5 <- renderPlotly({
-      req(r$clean_data)
-
-      # calculate all RSD values
-      plot_data <- calc_rsd(data = r$clean_data$clean_data[[5]],
-                            meta_data = r$meta_columns,
-                            lipid_class = TRUE)
+      req(r$rsd_data)
 
       # create the plot
-      create_rsd_hist(data = plot_data)
+      create_rsd_hist(data = r$rsd_data[[5]])
     })
 
     output$plot_sheet6 <- renderPlotly({
-      req(r$clean_data)
-
-      # calculate all RSD values
-      plot_data <- calc_rsd(data = r$clean_data$clean_data[[6]],
-                            meta_data = r$meta_columns,
-                            lipid_class = TRUE)
+      req(r$rsd_data)
 
       # create the plot
-      create_rsd_hist(data = plot_data)
+      create_rsd_hist(data = r$rsd_data[[6]])
     })
     #####################
 
     ##### PCA stuff #####
-    output$scores_sheet1 <- renderPlotly({
-      req(r$clean_data)
+    mod_pca_server(id = "pca_sheet1",
+                   r = r,
+                   sheet = 1)
 
-      # do pca analysis
-      mod <- do_pca(data = r$clean_data$clean_data[[1]],
-                    meta_data = r$meta_columns)
+    mod_pca_server(id = "pca_sheet2",
+                   r = r,
+                   sheet = 2)
 
-      scores_plot(model = mod,
-                  meta_data = r$clean_data$clean_data[[1]][, r$meta_columns])
-    })
+    mod_pca_server(id = "pca_sheet3",
+                   r = r,
+                   sheet = 3)
 
-    output$loadings_sheet1 <- renderPlotly({
-      req(r$clean_data)
+    mod_pca_server(id = "pca_sheet4",
+                   r = r,
+                   sheet = 4)
 
-      # do pca analysis
-      mod <- do_pca(data = r$clean_data$clean_data[[1]],
-                    meta_data = r$meta_columns)
+    mod_pca_server(id = "pca_sheet5",
+                   r = r,
+                   sheet = 5)
 
-
-      loadings_plot(model = mod)
-    })
-
-    output$sumfit_sheet1 <- renderPlot({
-      req(r$clean_data)
-
-      # do pca analysis
-      mod <- do_pca(data = r$clean_data$clean_data[[1]],
-                    meta_data = r$meta_columns)
-
-      sumfit_plot(model = mod)
-    })
-
-    output$scores_sheet2 <- renderPlotly({
-      req(r$clean_data)
-
-      # do pca analysis
-      mod <- do_pca(data = r$clean_data$clean_data[[2]],
-                    meta_data = r$meta_columns)
-
-      scores_plot(model = mod,
-                  meta_data = r$clean_data$clean_data[[2]][, r$meta_columns])
-    })
-
-    output$scores_sheet5 <- renderPlotly({
-      req(r$clean_data)
-
-      # do pca analysis
-      mod <- do_pca(data = r$clean_data$clean_data[[5]],
-                    meta_data = r$meta_columns)
-
-      scores_plot(model = mod,
-                  meta_data = r$clean_data$clean_data[[5]][, r$meta_columns])
-    })
-
-    output$scores_sheet6 <- renderPlotly({
-      req(r$clean_data)
-
-      # do pca analysis
-      mod <- do_pca(data = r$clean_data$clean_data[[6]],
-                    meta_data = r$meta_columns)
-
-      scores_plot(model = mod,
-                  meta_data = r$clean_data$clean_data[[6]][, r$meta_columns])
-    })
-
+    mod_pca_server(id = "pca_sheet6",
+                   r = r,
+                   sheet = 6)
     #####################
 
 

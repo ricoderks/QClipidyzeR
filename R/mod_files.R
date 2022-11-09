@@ -39,36 +39,59 @@ mod_files_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    # sort the file names
-    my_files <- reactive({
-      req(input$import_files)
-
+    # import the files
+    observeEvent(input$import_files, {
       # get the file names
       my_files <- input$import_files
 
-      if (is.null(my_files)) {
-        # no files selected yet
-        return(NULL)
-      } else {
+      print("Sort files")
+      if (!is.null(my_files)) {
         batches <- str_extract(string = my_files$name,
                                pattern = "[bB][aA][tT][cC][hH][ -_]?[0-9]{1,2}")
 
         # sort the files according to the batch order
-        my_files <- my_files[order(batches), ]
+        r$files <- my_files[order(batches), ]
+      }
 
-        return(my_files)
+
+      print("Read all data")
+      # read all the files
+      r$all_data <- read_files(files = r$files,
+                               sheet_names = r$sheet_names)
+
+      # clean the data, every column is kept (for now)
+      # only keep pooled samples and samples
+      # remove features which are NOT present in all pooled samples
+      print("Clean data")
+      r$clean_data <- clean_data(data = r$all_data)
+
+      # determine the meta data columns
+      r$meta_columns <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
+                                          pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
+
+      print("Do some more calculations")
+      for(a in 1:6) {
+        # calculate the RSD stuff
+        print(paste0("Calculation: ", a))
+          r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]]),
+                                      meta_data = isolate(r$meta_columns),
+                                      lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
+
+          r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
+                                     meta_data = r$meta_columns)
       }
     })
 
     # show the imported file names
     output$files_imported <- renderUI({
-      req(my_files)
+      req(r$files,
+          r$rsd_data)
 
-      if(!is.null(my_files())) {
+      if(!is.null(r$files)) {
         my_list <- "<ul>"
 
-        for(a in 1:length(my_files()$name)) {
-          my_list <- paste(my_list, "<li>", my_files()$name[a], "</li>")
+        for(a in 1:length(r$files$name)) {
+          my_list <- paste(my_list, "<li>", r$files$name[a], "</li>")
         }
 
         my_list <- paste(my_list, "</ul>")
@@ -80,29 +103,8 @@ mod_files_server <- function(id, r){
       }
     })
 
-    # r$all_data <- reactive({
-    observe({
-      req(my_files)
-
-      if(!is.null(my_files())) {
-        # read all the files
-        r$all_data <- read_files(files = my_files(),
-                                 sheet_names = r$sheet_names)
-
-        # clean the data, every column is kept (for now)
-        # only keep pooled samples and samples
-        # remove features which are NOT present in all pooled samples
-        r$clean_data <- clean_data(data = r$all_data)
-
-        # determine the meta data columns
-        r$meta_columns <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
-                                            pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
-      }
-    })
-
     # just for some debugging
     output$debug <- renderText({
-      req(my_files)
 
       # print(my_files()$name)
       # print(class(r$all_data()))

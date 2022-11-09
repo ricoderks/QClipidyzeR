@@ -85,5 +85,5 @@ clean_data <- function(data = NULL) {
     clean_data$clean_data[[a]] <- data_df[, na_pooled_idx]
   }
 
-  return(clean_data)
+  return(clean_data$clean_data)
 }
