@@ -26,6 +26,7 @@ golem::add_module(name = "files", with_test = FALSE) # Name of the module
 golem::add_module(name = "data", with_test = FALSE) # Name of the module
 golem::add_module(name = "results", with_test = FALSE) # Name of the module
 golem::add_module(name = "pca", with_test = FALSE) # Name of the module
+golem::add_module(name = "rsd", with_test = FALSE) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
