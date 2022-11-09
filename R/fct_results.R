@@ -191,6 +191,89 @@ scores_plot <- function(model = NULL,
 }
 
 
+#' @title Create loadings plot
+#'
+#' @description Show loadings plot.
+#'
+#' @param model pcaRes object.
+#'
+#' @return plotly object
+#'
+#' @author Rico Derks
+#'
+#' @importFrom ggplot2 aes geom_path geom_point geom_vline geom_hline labs theme_minimal theme .data
+#' @importFrom plotly ggplotly
+#'
+#' @noRd
+#'
+loadings_plot <- function(model = NULL) {
+  plot_data <- data.frame("lipid" = rownames(model@loadings),
+                          model@loadings) |>
+    mutate(lipid_class = str_extract(string = lipid,
+                                     pattern = "^[a-zA-Z]* O?"),
+           lipid_class = if_else(lipid_class == "Cer ",
+                                 str_extract(string = lipid,
+                                             pattern = "^[a-zA-Z]* d18:[01]"),
+                                 lipid_class))
+
+  p <- plot_data |>
+    ggplot2::ggplot() +
+    ggplot2::geom_vline(xintercept = 0,
+                        colour = "gray") +
+    ggplot2::geom_hline(yintercept = 0,
+                        colour = "gray") +
+    ggplot2::geom_text(ggplot2::aes(x = .data$PC1,
+                                    y = .data$PC2,
+                                    label = .data$lipid_class,
+                                    colour = .data$lipid_class)) +
+    ggplot2::labs(title = "Loadings plot",
+                  caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
+                  x = sprintf("PC 1 (%0.1f %%)", model@R2[1] * 100),
+                  y = sprintf("PC 2 (%0.1f %%)", model@R2[2] * 100)) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "none")
+
+ply <- plotly::ggplotly(p)
+
+return(ply)
+}
+
+
+#' @title Create summary of fit plot
+#'
+#' @description Show summary of fit plot.
+#'
+#' @param model pcaRes object.
+#'
+#' @return ggplot2 object
+#'
+#' @author Rico Derks
+#'
+#' @importFrom ggplot2 aes geom_col labs theme_minimal theme .data
+#'
+#' @noRd
+#'
+sumfit_plot <- function(model = NULL) {
+  plot_data <- data.frame(PC = paste("PC", 1:length(model@R2cum), sep = ""),
+                           R2cum = model@R2cum,
+                           Q2cum = model@cvstat) |>
+    pivot_longer(cols = c(R2cum, Q2cum),
+                 names_to = "variable",
+                 values_to = "value")
+
+  p <- plot_data |>
+    ggplot2::ggplot(ggplot2::aes(x = .data$PC,
+                                 y = .data$value,
+                                 fill = .data$variable)) +
+    ggplot2::geom_col(position = "dodge") +
+    ggplot2::labs(title = "Summary of fit") +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "bottom")
+
+  return(p)
+}
+
+
 #' @title Create a Hotelling T2 ellipse for a PCA score plot
 #'
 #' @description This function can be used to create a confidence (Hotelling T2) interval for a

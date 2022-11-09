@@ -9,6 +9,7 @@ app_server <- function(input, output, session) {
 
   r <- reactiveValues(all_data = NULL,
                       clean_data = NULL,
+                      pca_model = vector("list", 6),
                       meta_columns = NULL,
                       sheet_names = c("Lipid Species Conc (nmolg)",
                                       "Lipid Species Composition (%)",

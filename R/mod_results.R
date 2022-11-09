@@ -30,8 +30,33 @@ mod_results_server <- function(id, r){
         id = "plot_tabset",
         tabPanel(
           title = r$sheet_names_short[1],
-          plotlyOutput(outputId = ns("plot_sheet1")),
-          plotlyOutput(outputId = ns("scores_sheet1"))
+          fluidRow(
+            bs4Dash::box(
+              collapsible = FALSE,
+              headerBorder = FALSE,
+              plotlyOutput(outputId = ns("plot_sheet1"))
+            ),
+          ),
+          fluidRow(
+            bs4Dash::box(
+              width = 5,
+              collapsible = FALSE,
+              headerBorder = FALSE,
+              plotlyOutput(outputId = ns("scores_sheet1"))
+            ),
+            bs4Dash::box(
+              width = 5,
+              collapsible = FALSE,
+              headerBorder = FALSE,
+              plotlyOutput(outputId = ns("loadings_sheet1"))
+            ),
+            bs4Dash::box(
+              width = 2,
+              collapsible = FALSE,
+              headerBorder = FALSE,
+              plotOutput(outputId = ns("sumfit_sheet1"))
+            )
+          )
         ),
         tabPanel(
           title = r$sheet_names_short[2],
@@ -141,10 +166,31 @@ mod_results_server <- function(id, r){
 
       # do pca analysis
       mod <- do_pca(data = r$clean_data$clean_data[[1]],
-                          meta_data = r$meta_columns)
+                    meta_data = r$meta_columns)
 
       scores_plot(model = mod,
                   meta_data = r$clean_data$clean_data[[1]][, r$meta_columns])
+    })
+
+    output$loadings_sheet1 <- renderPlotly({
+      req(r$clean_data)
+
+      # do pca analysis
+      mod <- do_pca(data = r$clean_data$clean_data[[1]],
+                    meta_data = r$meta_columns)
+
+
+      loadings_plot(model = mod)
+    })
+
+    output$sumfit_sheet1 <- renderPlot({
+      req(r$clean_data)
+
+      # do pca analysis
+      mod <- do_pca(data = r$clean_data$clean_data[[1]],
+                    meta_data = r$meta_columns)
+
+      sumfit_plot(model = mod)
     })
 
     output$scores_sheet2 <- renderPlotly({
