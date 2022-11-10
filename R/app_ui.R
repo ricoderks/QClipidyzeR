@@ -55,7 +55,7 @@ app_ui <- function(request) {
           tabItem(
             tabName = "welcome",
             fluidRow(
-              column(
+              bs4Dash::column(
                 width = 10,
                 p("This app is intended to give a quick overview of the quality of a Lipidyzer study. E.g. it will show you the RSD values and a PCA analysis is to
                   to see if there is any batch efftect in the data. For more information see the Help section.")
