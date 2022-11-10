@@ -52,19 +52,23 @@ mod_rsd_server <- function(id, r, sheet){
     output$rsd_plot <- renderPlotly({
       req(r$rsd_data)
 
-      # create the plot
-      if(sheet != 3 | sheet != 4) {
-        create_rsd_hist(data = r$rsd_data[[sheet]])
+      if(!is.null(r$rsd_data[[sheet]])) {
+        # create the plot
+        if(sheet != 3 | sheet != 4) {
+          create_rsd_hist(data = r$rsd_data[[sheet]])
+        }
       }
     })
 
     output$rsd_table <- DT::renderDT({
       req(r$rsd_data)
 
-      if(sheet == 3 | sheet == 4) {
-        table_DT <- create_rsd_table(data = r$rsd_data[[sheet]])
+      if(!is.null(r$rsd_data[[sheet]])) {
+        if(sheet == 3 | sheet == 4) {
+          table_DT <- create_rsd_table(data = r$rsd_data[[sheet]])
 
-        table_DT
+          table_DT
+        }
       }
     })
 
