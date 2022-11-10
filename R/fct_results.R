@@ -218,8 +218,6 @@ loadings_plot <- function(model = NULL) {
                                              pattern = "^[a-zA-Z]* d18:[01]"),
                                  .data$lipid_class))
 
-  print(head(plot_data))
-
   p <- plot_data |>
     ggplot2::ggplot() +
     ggplot2::geom_vline(xintercept = 0,
