@@ -67,12 +67,12 @@ clean_data <- function(data = NULL) {
   clean_data <- data |>
     dplyr::mutate(clean_data = purrr::map(.x = data,
                                           .f = ~ .x |>
-                                            dplyr::filter(GroupName %in% c("Pooled sample", "Samples"))))
+                                            dplyr::filter(NormType %in% c("Pooled sample", "Samples"))))
 
   # which features
   for(a in 1:6) {
     data_df <- clean_data$clean_data[[a]]
-    na_pooled_idx <- apply(data_df[data_df$GroupName == "Pooled sample", ], 2, function(x) {
+    na_pooled_idx <- apply(data_df[data_df$NormType == "Pooled sample", ], 2, function(x) {
       sum(is.na(x))
     })
     names(na_pooled_idx) <- NULL

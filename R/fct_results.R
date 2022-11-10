@@ -21,7 +21,7 @@
 #'
 calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
   rsd_data <- data |>
-    filter(.data$GroupName == "Pooled sample") |>
+    filter(.data$NormType == "Pooled sample") |>
     pivot_longer(
       cols = !meta_data,
       names_to = "lipid",
@@ -179,7 +179,7 @@ scores_plot <- function(model = NULL,
                         ggplot2::aes(x = .data$PC1,
                                      y = .data$PC2,
                                      colour = .data$batch,
-                                     shape = .data$GroupName),
+                                     shape = .data$NormType),
                         size = 3) +
     ggplot2::labs(title = "Scores plot",
                   caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
