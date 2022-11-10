@@ -212,11 +212,13 @@ loadings_plot <- function(model = NULL) {
   plot_data <- data.frame("lipid" = rownames(model@loadings),
                           model@loadings) |>
     mutate(lipid_class = str_extract(string = .data$lipid,
-                                     pattern = "^[a-zA-Z]* O?"),
+                                     pattern = "^[a-zA-Z]* ?O?"),
            lipid_class = if_else(.data$lipid_class == "Cer ",
                                  str_extract(string = .data$lipid,
                                              pattern = "^[a-zA-Z]* d18:[01]"),
                                  .data$lipid_class))
+
+  print(head(plot_data))
 
   p <- plot_data |>
     ggplot2::ggplot() +
