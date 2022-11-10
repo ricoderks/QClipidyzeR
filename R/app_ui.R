@@ -60,7 +60,7 @@ app_ui <- function(request) {
                 p("This app is intended to give a quick overview of the quality of a Lipidyzer study. E.g. it will show you the RSD values and a PCA analysis is to
                   to see if there is any batch efftect in the data. For more information see the Help section.")
               ),
-              column(
+              bs4Dash::column(
                 width = 2,
                 img(src = "./www/CPM-logo.png", alt = "CPM logo", width = "100px")
               )
