@@ -31,109 +31,55 @@ mod_data_server <- function(id, r){
         id = "data_tabset",
         tabPanel(
           title = r$sheet_names_short[1],
-          DT::DTOutput(outputId = ns("data_sheet1"))
+          mod_tables_ui(id = ns("data_sheet1"))
         ),
         tabPanel(
           title = r$sheet_names_short[2],
-          DT::DTOutput(outputId = ns("data_sheet2"))
+          mod_tables_ui(id = ns("data_sheet2"))
         ),
         tabPanel(
           title = r$sheet_names_short[3],
-          DT::DTOutput(outputId = ns("data_sheet3"))
+          mod_tables_ui(id = ns("data_sheet3"))
         ),
         tabPanel(
           title = r$sheet_names_short[4],
-          DT::DTOutput(outputId = ns("data_sheet4"))
+          mod_tables_ui(id = ns("data_sheet4"))
         ),
         tabPanel(
           title = r$sheet_names_short[5],
-          DT::DTOutput(outputId = ns("data_sheet5"))
+          mod_tables_ui(id = ns("data_sheet5"))
         ),
         tabPanel(
           title = r$sheet_names_short[6],
-          DT::DTOutput(outputId = ns("data_sheet6"))
+          mod_tables_ui(id = ns("data_sheet6"))
         )
       )
     })
 
+    mod_tables_server(id = "data_sheet1",
+                      r = r,
+                      sheet = 1)
 
-    output$data_sheet1 <- DT::renderDT({
-      req(r$all_data)
+    mod_tables_server(id = "data_sheet2",
+                      r = r,
+                      sheet = 2)
 
-      if(!is.null(r$all_data)) {
-        show_data <- r$clean_data[[1]]
+    mod_tables_server(id = "data_sheet3",
+                      r = r,
+                      sheet = 3)
 
-        show_data
-      }
-    },
-    options = list(pageLength = 20,
-                   dom = "tpr")
-    )
+    mod_tables_server(id = "data_sheet4",
+                      r = r,
+                      sheet = 4)
 
-    output$data_sheet2 <- DT::renderDT({
-      req(r$all_data)
+    mod_tables_server(id = "data_sheet5",
+                      r = r,
+                      sheet = 5)
 
-      if(!is.null(r$all_data)) {
-        show_data <- r$clean_data[[2]]
+    mod_tables_server(id = "data_sheet6",
+                      r = r,
+                      sheet = 6)
 
-        show_data
-      }
-    },
-    options = list(pageLength = 20,
-                   dom = "tpr")
-    )
-
-    output$data_sheet3 <- DT::renderDT({
-      req(r$all_data)
-
-      if(!is.null(r$all_data)) {
-        show_data <- r$clean_data[[3]]
-
-        show_data
-      }
-    },
-    options = list(pageLength = 20,
-                   dom = "tpr")
-    )
-
-    output$data_sheet4 <- DT::renderDT({
-      req(r$all_data)
-
-      if(!is.null(r$all_data)) {
-        show_data <- r$clean_data[[4]]
-
-        show_data
-      }
-    },
-    options = list(pageLength = 20,
-                   dom = "tpr")
-    )
-
-    output$data_sheet5 <- DT::renderDT({
-      req(r$all_data)
-
-      if(!is.null(r$all_data)) {
-        show_data <- r$clean_data[[5]]
-
-        show_data
-      }
-    },
-    options = list(pageLength = 20,
-                   dom = "tpr")
-    )
-
-    output$data_sheet6 <- DT::renderDT({
-      req(r$all_data)
-
-      if(!is.null(r$all_data)) {
-        show_data <- r$clean_data[[6]]
-
-        show_data
-      }
-    },
-    options = list(pageLength = 20,
-                   dom = "tpr")
-    )
 
   }) # end module server
 }
