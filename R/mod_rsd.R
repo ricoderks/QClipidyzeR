@@ -3,6 +3,8 @@
 #' @description A shiny Module.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
+#' @param r is a reactiveValues object containing all information.
+#' @param sheet integer, indicates what sheet to use.
 #'
 #' @noRd
 #'

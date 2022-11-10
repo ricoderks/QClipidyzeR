@@ -2,7 +2,8 @@
 #'
 #' @description A shiny Module.
 #'
-#' @param id,r,input,output,session Internal parameters for {shiny}.
+#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param r is a reactiveValues object containing all information
 #'
 #' @noRd
 #' @importFrom stringr str_detect
