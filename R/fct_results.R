@@ -13,32 +13,34 @@
 #' @author Rico Derks
 #'
 #' @importFrom tidyr pivot_longer
+#' @importFrom rlang .data
 #' @importFrom dplyr if_else
+#' @importFrom stats sd
 #'
 #' @noRd
 #'
 calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
   rsd_data <- data |>
-    filter(GroupName == "Pooled sample") |>
+    filter(.data$GroupName == "Pooled sample") |>
     pivot_longer(
       cols = !meta_data,
       names_to = "lipid",
       values_to = "value"
     ) |>
-    group_by(lipid) |>
-    summarise(mean = mean(value, na.rm = TRUE),
-              stdev = sd(value, na.rm = TRUE),
-              rsd = stdev / mean)
+    group_by(.data$lipid) |>
+    summarise(mean = mean(.data$value, na.rm = TRUE),
+              stdev = sd(.data$value, na.rm = TRUE),
+              rsd = .data$stdev / mean)
 
   # extract lipid class information for lipid species
   if(lipid_class) {
     rsd_data <- rsd_data |>
-      mutate(lipid_class = str_extract(string = lipid,
+      mutate(lipid_class = str_extract(string = .data$lipid,
                                        pattern = "^[a-zA-Z]* O?"),
              lipid_class = if_else(lipid_class == "Cer ",
-                                   str_extract(string = lipid,
+                                   str_extract(string = .data$lipid,
                                                pattern = "^[a-zA-Z]* d18:[01]"),
-                                   lipid_class))
+                                   .data$lipid_class))
   }
 
   return(rsd_data)
@@ -61,7 +63,7 @@ calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
 #'
 create_rsd_hist <- function(data = NULL) {
   p <- data |>
-    mutate(rsd = rsd * 100) |>
+    mutate(rsd = .data$rsd * 100) |>
     ggplot2::ggplot(ggplot2::aes(x = .data$rsd,
                                  fill = .data$lipid_class)) +
     ggplot2::geom_histogram(bins = 100) +
@@ -166,18 +168,18 @@ scores_plot <- function(model = NULL,
     ggplot2::ggplot() +
     ggplot2::geom_path(data = simple_ellipse(x = plot_data$PC1,
                                              y = plot_data$PC2),
-                       ggplot2::aes(x = x,
-                                    y = y),
+                       ggplot2::aes(x = .data$x,
+                                    y = .data$y),
                        colour = "gray") +
     ggplot2::geom_vline(xintercept = 0,
                         colour = "gray") +
     ggplot2::geom_hline(yintercept = 0,
                         colour = "gray") +
     ggplot2::geom_point(data = plot_data,
-                        ggplot2::aes(x = PC1,
-                                     y = PC2,
-                                     colour = batch,
-                                     shape = GroupName),
+                        ggplot2::aes(x = .data$PC1,
+                                     y = .data$PC2,
+                                     colour = .data$batch,
+                                     shape = .data$GroupName),
                         size = 3) +
     ggplot2::labs(title = "Scores plot",
                   caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
@@ -209,12 +211,12 @@ scores_plot <- function(model = NULL,
 loadings_plot <- function(model = NULL) {
   plot_data <- data.frame("lipid" = rownames(model@loadings),
                           model@loadings) |>
-    mutate(lipid_class = str_extract(string = lipid,
+    mutate(lipid_class = str_extract(string = .data$lipid,
                                      pattern = "^[a-zA-Z]* O?"),
-           lipid_class = if_else(lipid_class == "Cer ",
-                                 str_extract(string = lipid,
+           lipid_class = if_else(.data$lipid_class == "Cer ",
+                                 str_extract(string = .data$lipid,
                                              pattern = "^[a-zA-Z]* d18:[01]"),
-                                 lipid_class))
+                                 .data$lipid_class))
 
   p <- plot_data |>
     ggplot2::ggplot() +
@@ -257,7 +259,7 @@ sumfit_plot <- function(model = NULL) {
   plot_data <- data.frame(PC = paste("PC", 1:length(model@R2cum), sep = ""),
                            R2cum = model@R2cum,
                            Q2cum = model@cvstat) |>
-    pivot_longer(cols = c(R2cum, Q2cum),
+    pivot_longer(cols = c(.data$R2cum, .data$Q2cum),
                  names_to = "variable",
                  values_to = "value")
 
