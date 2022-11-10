@@ -54,7 +54,8 @@ app_ui <- function(request) {
         tabItems(
           tabItem(
             tabName = "welcome",
-            p("Work in progress......")
+            p("This app is intended to give a quick overview of the quality of a Lipidyzer study. E.g. it will show you the RSD values and a PCA analysis is to
+              to see if there is any batch efftect in the data. For more information see the Help section.")
           ),
           tabItem(
             tabName = "file",
