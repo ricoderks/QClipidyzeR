@@ -44,7 +44,6 @@ mod_files_server <- function(id, r){
       # get the file names
       my_files <- input$import_files
 
-      print("Sort files")
       if (!is.null(my_files)) {
         batches <- str_extract(string = my_files$name,
                                pattern = "[bB][aA][tT][cC][hH][ -_]?[0-9]{1,2}")
@@ -53,8 +52,6 @@ mod_files_server <- function(id, r){
         r$files <- my_files[order(batches), ]
       }
 
-
-      print("Read all data")
       # read all the files
       r$all_data <- read_files(files = r$files,
                                sheet_names = r$sheet_names)
@@ -62,17 +59,14 @@ mod_files_server <- function(id, r){
       # clean the data, every column is kept (for now)
       # only keep pooled samples and samples
       # remove features which are NOT present in all pooled samples
-      print("Clean data")
       r$clean_data <- clean_data(data = r$all_data)
 
       # determine the meta data columns
       r$meta_columns <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
                                           pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
 
-      print("Do some more calculations")
       for(a in 1:6) {
         # calculate the RSD stuff
-        print(paste0("Calculation: ", a))
           r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]]),
                                       meta_data = isolate(r$meta_columns),
                                       lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
