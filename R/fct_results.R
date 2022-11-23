@@ -333,3 +333,37 @@ simple_ellipse <- function(x, y, alpha = 0.95, len = 200) {
 
   return(result)
 }
+
+
+#' @title Create the CSS for coloring the checkboxes
+#'
+#' @description Create the CSS code for coloring checkboxes from prettyCheckboxGroup
+#'     from shinyWidgets.
+#'
+#' @return Character(1) containing the CSS code.
+#'
+#' @noRd
+#'
+#' @author Rico Derks
+#'
+#' @importFrom RColorBrewer brewer.pal
+#'
+create_cb_css <- function() {
+  batch_colors <- c(
+    RColorBrewer::brewer.pal(n = 9, name = "Set1"),
+    RColorBrewer::brewer.pal(n = 8, name = "Set2"),
+    RColorBrewer::brewer.pal(n = 12, name = "Set3")
+  )
+  names(batch_colors) <- as.character(1:length(batch_colors))
+
+  CSS <- ""
+  for(a in 1:length(batch_colors)) {
+    CSS <- paste0(CSS, ".pretty input[value='", a, "']~.state label:after,
+                        .pretty input[value='", a,"']~.state label:before {
+                           background-color: ", batch_colors[a] ,";
+                        }")
+  }
+
+  return(CSS)
+}
+

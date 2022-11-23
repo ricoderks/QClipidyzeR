@@ -5,9 +5,11 @@
 #' @param id,input,output,session Internal parameters for {shiny}.
 #' @param r is a reactiveValues object containing all information.
 #' @param sheet integer, indicates what sheet to use.
+#'
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom shinyWidgets prettyCheckboxGroup
 #' @import bs4Dash
 #' @import plotly
 #'
@@ -49,19 +51,25 @@ mod_pca_server <- function(id, r, sheet){
       # get the batch information to create the checkboxes
       meta_data <- r$clean_data[[sheet]][, r$meta_columns]
       batches <- as.integer(unique(meta_data$batch))
+      # create the CSS for coloring the checkboxes
+      CSS <- create_cb_css()
 
       tagList(
+        tags$head(tags$style(HTML(CSS))),
         fluidRow(
           column(width = 3,
-                 checkboxGroupInput(
+                 prettyCheckboxGroup(
                    inputId = ns("batch"),
                    label = "Batch:",
-                   choices = batches,
-                   selected = batches
+                   icon = icon("check"),
+                   choiceNames = as.character(batches),
+                   choiceValues = batches,
+                   selected = as.character(batches)
                  ),
-                 checkboxGroupInput(
+                 prettyCheckboxGroup(
                    inputId = ns("sample_type"),
                    label = "Sample type:",
+                   icon = icon("check"),
                    choices = c("Pooled sample", "Samples"),
                    selected = c("Pooled sample", "Samples")
                  )
