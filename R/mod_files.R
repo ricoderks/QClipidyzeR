@@ -6,6 +6,8 @@
 #' @param r is a reactiveValues object containing all information
 #'
 #' @noRd
+#'
+#' @import waiter
 #' @importFrom stringr str_detect
 #' @importFrom shiny NS tagList
 mod_files_ui <- function(id){

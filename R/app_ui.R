@@ -3,7 +3,6 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
-#' @import waiter
 #' @import bs4Dash
 #' @importFrom utils packageVersion
 #'
