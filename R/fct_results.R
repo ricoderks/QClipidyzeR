@@ -150,24 +150,49 @@ do_pca <- function(data = NULL, meta_data = NULL) {
 #'
 #' @param model pcaRes object.
 #' @param meta_data data.frame containing the meta data.
+#' @param batch character vector, containing the numbers (as character) of which batches to show.
+#' @param sample_type character vector, containing the names of the sample types to show.
 #'
 #' @return plotly object
 #'
 #' @author Rico Derks
 #'
-#' @importFrom ggplot2 aes geom_path geom_point geom_vline geom_hline labs theme_minimal
+#' @importFrom ggplot2 aes geom_path geom_point geom_vline geom_hline labs theme_minimal theme scale_color_manual
 #' @importFrom plotly ggplotly
+#' @importFrom RColorBrewer brewer.pal
 #'
 #' @noRd
 #'
 scores_plot <- function(model = NULL,
-                        meta_data = NULL) {
+                        meta_data = NULL,
+                        batch = NULL,
+                        sample_type = NULL) {
+  batch <- as.integer(batch)
+
   plot_data <- cbind(meta_data, model@scores)
+  # copy the data to make sure the Hoteling T2 is correct
+  full_data <- plot_data
+
+  if(!is.null(batch)) {
+    plot_data <- plot_data[plot_data$batch %in% batch, ]
+  }
+
+  if(!is.null(sample_type)) {
+    plot_data <- plot_data[plot_data$NormType %in% sample_type, ]
+  }
+
+  # create the colors for the batches
+  batch_colors <- c(
+    RColorBrewer::brewer.pal(n = 9, name = "Set1"),
+    RColorBrewer::brewer.pal(n = 8, name = "Set2"),
+    RColorBrewer::brewer.pal(n = 12, name = "Set3")
+  )
+  names(batch_colors) <- as.character(1:length(batch_colors))
 
   p <- plot_data |>
     ggplot2::ggplot() +
-    ggplot2::geom_path(data = simple_ellipse(x = plot_data$PC1,
-                                             y = plot_data$PC2),
+    ggplot2::geom_path(data = simple_ellipse(x = full_data$PC1,
+                                             y = full_data$PC2),
                        ggplot2::aes(x = .data$x,
                                     y = .data$y),
                        colour = "gray") +
@@ -181,11 +206,13 @@ scores_plot <- function(model = NULL,
                                      colour = .data$batch,
                                      shape = .data$NormType),
                         size = 3) +
+    ggplot2::scale_color_manual(values = batch_colors) +
     ggplot2::labs(title = "Scores plot",
                   caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
                   x = sprintf("PC 1 (%0.1f %%)", model@R2[1] * 100),
                   y = sprintf("PC 2 (%0.1f %%)", model@R2[2] * 100)) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "none")
 
   ply <- plotly::ggplotly(p)
 
