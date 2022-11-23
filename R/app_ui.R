@@ -3,6 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import waiter
 #' @import bs4Dash
 #' @importFrom utils packageVersion
 #'
@@ -11,6 +12,7 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
+
     # Your application UI logic
     dashboardPage(
       #### Header
