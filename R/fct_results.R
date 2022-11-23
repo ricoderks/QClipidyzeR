@@ -150,24 +150,54 @@ do_pca <- function(data = NULL, meta_data = NULL) {
 #'
 #' @param model pcaRes object.
 #' @param meta_data data.frame containing the meta data.
+#' @param batch character vector, containing the numbers (as character) of which batches to show.
+#' @param sample_type character vector, containing the names of the sample types to show.
 #'
 #' @return plotly object
 #'
 #' @author Rico Derks
 #'
-#' @importFrom ggplot2 aes geom_path geom_point geom_vline geom_hline labs theme_minimal
+#' @importFrom ggplot2 aes geom_path geom_point geom_vline geom_hline labs
+#'     theme_minimal theme scale_color_manual scale_shape_manual
 #' @importFrom plotly ggplotly
+#' @importFrom RColorBrewer brewer.pal
 #'
 #' @noRd
 #'
 scores_plot <- function(model = NULL,
-                        meta_data = NULL) {
+                        meta_data = NULL,
+                        batch = NULL,
+                        sample_type = NULL) {
+  batch <- as.integer(batch)
+
   plot_data <- cbind(meta_data, model@scores)
+  # copy the data to make sure the Hoteling T2 is correct
+  full_data <- plot_data
+
+  if(!is.null(batch)) {
+    plot_data <- plot_data[plot_data$batch %in% batch, ]
+  }
+
+  if(!is.null(sample_type)) {
+    plot_data <- plot_data[plot_data$NormType %in% sample_type, ]
+  }
+
+  # create the colors for the batches
+  batch_colors <- c(
+    RColorBrewer::brewer.pal(n = 9, name = "Set1"),
+    RColorBrewer::brewer.pal(n = 8, name = "Set2"),
+    RColorBrewer::brewer.pal(n = 12, name = "Set3")
+  )
+  names(batch_colors) <- as.character(1:length(batch_colors))
+
+  # create the shapes for the sample type, 16 = circle, 17 = triangle
+  sample_types <- c("Pooled sample" = 16,
+                    "Samples" = 17)
 
   p <- plot_data |>
     ggplot2::ggplot() +
-    ggplot2::geom_path(data = simple_ellipse(x = plot_data$PC1,
-                                             y = plot_data$PC2),
+    ggplot2::geom_path(data = simple_ellipse(x = full_data$PC1,
+                                             y = full_data$PC2),
                        ggplot2::aes(x = .data$x,
                                     y = .data$y),
                        colour = "gray") +
@@ -181,11 +211,14 @@ scores_plot <- function(model = NULL,
                                      colour = .data$batch,
                                      shape = .data$NormType),
                         size = 3) +
+    ggplot2::scale_color_manual(values = batch_colors) +
+    ggplot2::scale_shape_manual(values = sample_types) +
     ggplot2::labs(title = "Scores plot",
                   caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
                   x = sprintf("PC 1 (%0.1f %%)", model@R2[1] * 100),
                   y = sprintf("PC 2 (%0.1f %%)", model@R2[2] * 100)) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "none")
 
   ply <- plotly::ggplotly(p)
 
@@ -306,3 +339,37 @@ simple_ellipse <- function(x, y, alpha = 0.95, len = 200) {
 
   return(result)
 }
+
+
+#' @title Create the CSS for coloring the checkboxes
+#'
+#' @description Create the CSS code for coloring checkboxes from prettyCheckboxGroup
+#'     from shinyWidgets.
+#'
+#' @return Character(1) containing the CSS code.
+#'
+#' @noRd
+#'
+#' @author Rico Derks
+#'
+#' @importFrom RColorBrewer brewer.pal
+#'
+create_cb_css <- function() {
+  batch_colors <- c(
+    RColorBrewer::brewer.pal(n = 9, name = "Set1"),
+    RColorBrewer::brewer.pal(n = 8, name = "Set2"),
+    RColorBrewer::brewer.pal(n = 12, name = "Set3")
+  )
+  names(batch_colors) <- as.character(1:length(batch_colors))
+
+  CSS <- ""
+  for(a in 1:length(batch_colors)) {
+    CSS <- paste0(CSS, ".pretty input[value='", a, "']~.state label:after,
+                        .pretty input[value='", a,"']~.state label:before {
+                           background-color: ", batch_colors[a] ,";
+                        }")
+  }
+
+  return(CSS)
+}
+

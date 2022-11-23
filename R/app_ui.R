@@ -62,6 +62,7 @@ app_ui <- function(request) {
               ),
               bs4Dash::column(
                 width = 2,
+                align = "right",
                 img(src = "www/CPM-logo.png", alt = "CPM logo", width = "100px")
               )
             )
