@@ -48,6 +48,9 @@ mod_pca_server <- function(id, r, sheet){
     ns <- session$ns
 
     output$ui_scores <- renderUI({
+      req(r$clean_data,
+          r$pca_model)
+
       # get the batch information to create the checkboxes
       meta_data <- r$clean_data[[sheet]][, r$meta_columns]
       batches <- as.integer(unique(meta_data$batch))
