@@ -42,8 +42,6 @@ read_files <- function(files = NULL, sheet_names = NULL) {
                   )
     )
 
-  print(all_data$data[[3]]$batch)
-
   return(all_data)
 }
 
