@@ -70,7 +70,8 @@ mod_pca_server <- function(id, r, sheet){
                    inputId = ns("sample_type"),
                    label = "Sample type:",
                    icon = icon("check"),
-                   choices = c("Pooled sample", "Samples"),
+                   choiceNames = c("Pooled sample (●)", "Samples(▲)"),
+                   choiceValues = c("Pooled sample", "Samples"),
                    selected = c("Pooled sample", "Samples")
                  )
           ),
