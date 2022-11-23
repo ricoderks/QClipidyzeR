@@ -11,7 +11,7 @@
 #'
 #' @author Rico Derks
 #'
-#' @importFrom dplyr mutate relocate n
+#' @importFrom dplyr mutate relocate n arrange
 #' @importFrom purrr map2 reduce
 #' @importFrom readxl read_xlsx
 #' @importFrom rlang .data
@@ -36,10 +36,13 @@ read_files <- function(files = NULL, sheet_names = NULL) {
                                                                         read_order = 1:dplyr::n()) |>
                                                           dplyr::relocate(batch, read_order, .after = SampleID)) |>
                                        purrr::reduce(function(...) merge(...), all = TRUE) |>
-                                       # convert to batch number
-                                       mutate(batch = as.factor(as.integer(batch)))
+                                       # sort and convert to batch number
+                                       dplyr::arrange(.data$batch) |>
+                                       dplyr::mutate(batch = as.factor(as.integer(.data$batch)))
                   )
     )
+
+  print(all_data$data[[3]]$batch)
 
   return(all_data)
 }
