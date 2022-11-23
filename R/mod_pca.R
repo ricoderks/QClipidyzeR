@@ -22,7 +22,6 @@ mod_pca_ui <- function(id){
         collapsible = FALSE,
         headerBorder = FALSE,
         uiOutput(outputId = ns("ui_scores"))
-        # plotlyOutput(outputId = ns("scores"))
       ),
       bs4Dash::box(
         width = 5,
