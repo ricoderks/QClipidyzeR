@@ -157,7 +157,8 @@ do_pca <- function(data = NULL, meta_data = NULL) {
 #'
 #' @author Rico Derks
 #'
-#' @importFrom ggplot2 aes geom_path geom_point geom_vline geom_hline labs theme_minimal theme scale_color_manual
+#' @importFrom ggplot2 aes geom_path geom_point geom_vline geom_hline labs
+#'     theme_minimal theme scale_color_manual scale_shape_manual
 #' @importFrom plotly ggplotly
 #' @importFrom RColorBrewer brewer.pal
 #'
@@ -189,6 +190,10 @@ scores_plot <- function(model = NULL,
   )
   names(batch_colors) <- as.character(1:length(batch_colors))
 
+  # create the shapes for the sample type, 16 = circle, 17 = triangle
+  sample_types <- c("Pooled sample" = 16,
+                    "Samples" = 17)
+
   p <- plot_data |>
     ggplot2::ggplot() +
     ggplot2::geom_path(data = simple_ellipse(x = full_data$PC1,
@@ -207,6 +212,7 @@ scores_plot <- function(model = NULL,
                                      shape = .data$NormType),
                         size = 3) +
     ggplot2::scale_color_manual(values = batch_colors) +
+    ggplot2::scale_shape_manual(values = sample_types) +
     ggplot2::labs(title = "Scores plot",
                   caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
                   x = sprintf("PC 1 (%0.1f %%)", model@R2[1] * 100),
