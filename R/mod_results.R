@@ -22,7 +22,7 @@ mod_results_ui <- function(id){
 #' plots Server Functions
 #'
 #' @noRd
-mod_results_server <- function(id, r){
+mod_results_server <- function(id, r, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -65,53 +65,65 @@ mod_results_server <- function(id, r){
     ##### RSD stuff #####
     mod_rsd_server(id = "rsd_sheet1",
                    r = r,
-                   sheet = 1)
+                   sheet = 1,
+                   res_auth = res_auth)
 
     mod_rsd_server(id = "rsd_sheet2",
                    r = r,
-                   sheet = 2)
+                   sheet = 2,
+                   res_auth = res_auth)
 
     mod_rsd_server(id = "rsd_sheet3",
                    r = r,
-                   sheet = 3)
+                   sheet = 3,
+                   res_auth = res_auth)
 
     mod_rsd_server(id = "rsd_sheet4",
                    r = r,
-                   sheet = 4)
+                   sheet = 4,
+                   res_auth = res_auth)
 
     mod_rsd_server(id = "rsd_sheet5",
                    r = r,
-                   sheet = 5)
+                   sheet = 5,
+                   res_auth = res_auth)
 
     mod_rsd_server(id = "rsd_sheet6",
                    r = r,
-                   sheet = 6)
+                   sheet = 6,
+                   res_auth = res_auth)
     #####################
 
     ##### PCA stuff #####
     mod_pca_server(id = "pca_sheet1",
                    r = r,
-                   sheet = 1)
+                   sheet = 1,
+                   res_auth = res_auth)
 
     mod_pca_server(id = "pca_sheet2",
                    r = r,
-                   sheet = 2)
+                   sheet = 2,
+                   res_auth = res_auth)
 
     mod_pca_server(id = "pca_sheet3",
                    r = r,
-                   sheet = 3)
+                   sheet = 3,
+                   res_auth = res_auth)
 
     mod_pca_server(id = "pca_sheet4",
                    r = r,
-                   sheet = 4)
+                   sheet = 4,
+                   res_auth = res_auth)
 
     mod_pca_server(id = "pca_sheet5",
                    r = r,
-                   sheet = 5)
+                   sheet = 5,
+                   res_auth = res_auth)
 
     mod_pca_server(id = "pca_sheet6",
                    r = r,
-                   sheet = 6)
+                   sheet = 6,
+                   res_auth = res_auth)
     #####################
 
 

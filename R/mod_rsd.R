@@ -19,7 +19,7 @@ mod_rsd_ui <- function(id){
 #' rsd Server Functions
 #'
 #' @noRd
-mod_rsd_server <- function(id, r, sheet){
+mod_rsd_server <- function(id, r, sheet, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

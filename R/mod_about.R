@@ -32,7 +32,7 @@ mod_about_ui <- function(id){
 #' @importFrom sessioninfo session_info
 #'
 #' @noRd
-mod_about_server <- function(id){
+mod_about_server <- function(id, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

@@ -42,7 +42,7 @@ mod_pca_ui <- function(id){
 #' pca Server Functions
 #'
 #' @noRd
-mod_pca_server <- function(id, r, sheet){
+mod_pca_server <- function(id, r, sheet, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

@@ -19,7 +19,7 @@ mod_tables_ui <- function(id){
 #' tables Server Functions
 #'
 #' @noRd
-mod_tables_server <- function(id, r, sheet){
+mod_tables_server <- function(id, r, sheet, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

@@ -41,7 +41,7 @@ mod_files_ui <- function(id){
 #' @importFrom waiter Waitress
 #'
 #' @noRd
-mod_files_server <- function(id, r){
+mod_files_server <- function(id, r, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

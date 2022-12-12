@@ -22,7 +22,7 @@ mod_data_ui <- function(id){
 #' @import bs4Dash
 #'
 #' @noRd
-mod_data_server <- function(id, r){
+mod_data_server <- function(id, r, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -58,27 +58,33 @@ mod_data_server <- function(id, r){
 
     mod_tables_server(id = "data_sheet1",
                       r = r,
-                      sheet = 1)
+                      sheet = 1,
+                      res_auth = res_auth)
 
     mod_tables_server(id = "data_sheet2",
                       r = r,
-                      sheet = 2)
+                      sheet = 2,
+                      res_auth = res_auth)
 
     mod_tables_server(id = "data_sheet3",
                       r = r,
-                      sheet = 3)
+                      sheet = 3,
+                      res_auth = res_auth)
 
     mod_tables_server(id = "data_sheet4",
                       r = r,
-                      sheet = 4)
+                      sheet = 4,
+                      res_auth = res_auth)
 
     mod_tables_server(id = "data_sheet5",
                       r = r,
-                      sheet = 5)
+                      sheet = 5,
+                      res_auth = res_auth)
 
     mod_tables_server(id = "data_sheet6",
                       r = r,
-                      sheet = 6)
+                      sheet = 6,
+                      res_auth = res_auth)
 
 
   }) # end module server

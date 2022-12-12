@@ -28,7 +28,7 @@ mod_help_ui <- function(id){
 #' help Server Functions
 #'
 #' @noRd
-mod_help_server <- function(id){
+mod_help_server <- function(id, res_auth){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
