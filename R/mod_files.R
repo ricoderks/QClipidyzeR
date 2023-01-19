@@ -63,19 +63,19 @@ mod_files_server <- function(id, r){
       # get the file names
       my_files <- input$import_files
 
-      file_hostess$set(10)
+      # file_hostess$set(10)
 
       if (!is.null(my_files)) {
         batches <- str_extract(string = my_files$name,
                                pattern = "[bB][aA][tT][cC][hH][ -_]?[0-9]{1,2}")
 
-        file_hostess$set(15)
+        # file_hostess$set(15)
 
         # sort the files according to the batch order
         r$files <- my_files[order(batches), ]
       }
 
-      file_hostess$set(20)
+      file_hostess$set(10)
 
       # read all the files
       r$all_data <- read_files(files = r$files,
