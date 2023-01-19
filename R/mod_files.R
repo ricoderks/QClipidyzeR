@@ -61,8 +61,6 @@ mod_files_server <- function(id, r){
       r$errors <- NULL
 
       tryCatch({
-        file_waitress$notify()
-
         # get the file names
         my_files <- input$import_files
 
@@ -110,6 +108,8 @@ mod_files_server <- function(id, r){
         file_hostess$close()
       },
       error = function(e) {
+        # close the hostess
+        file_hostess$close()
         # empty some old data
         r$all_data <- NULL
         r$clean_data <- NULL
@@ -118,8 +118,6 @@ mod_files_server <- function(id, r){
         r$meta_columns <- NULL
         # pass the error on
         r$errors <- e
-        # close the hostess
-        file_hostess$close()
       })
     })
 
