@@ -58,55 +58,69 @@ mod_files_server <- function(id, r){
 
     # import the files
     observeEvent(input$import_files, {
-      # file_waitress$notify()
+      r$errors <- NULL
 
-      # get the file names
-      my_files <- input$import_files
+      tryCatch({
+        file_waitress$notify()
 
-      # file_hostess$set(10)
+        # get the file names
+        my_files <- input$import_files
 
-      if (!is.null(my_files)) {
-        batches <- str_extract(string = my_files$name,
-                               pattern = "[bB][aA][tT][cC][hH][ -_]?[0-9]{1,2}")
+        if (!is.null(my_files)) {
+          batches <- str_extract(string = my_files$name,
+                                 pattern = "[bB][aA][tT][cC][hH][ -_]?[0-9]{1,2}")
 
-        # file_hostess$set(15)
+          # sort the files according to the batch order
+          r$files <- my_files[order(batches), ]
+        }
 
-        # sort the files according to the batch order
-        r$files <- my_files[order(batches), ]
-      }
+        file_hostess$set(10)
 
-      file_hostess$set(10)
+        # read all the files
+        r$all_data <- read_files(files = r$files,
+                                 sheet_names = r$sheet_names)
 
-      # read all the files
-      r$all_data <- read_files(files = r$files,
-                               sheet_names = r$sheet_names)
 
-      file_hostess$set(60)
+        file_hostess$set(60)
 
-      # clean the data, every column is kept (for now)
-      # only keep pooled samples and samples
-      # remove features which are NOT present in all pooled samples
-      r$clean_data <- clean_data(data = r$all_data)
 
-      file_hostess$set(70)
+        # clean the data, every column is kept (for now)
+        # only keep pooled samples and samples
+        # remove features which are NOT present in all pooled samples
+        r$clean_data <- clean_data(data = r$all_data)
 
-      # determine the meta data columns
-      r$meta_columns <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
-                                          pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
+        file_hostess$set(70)
 
-      file_hostess$set(80)
+        # determine the meta data columns
+        r$meta_columns <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
+                                            pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
 
-      for(a in 1:6) {
-        # calculate the RSD stuff
+        file_hostess$set(80)
+
+        for(a in 1:6) {
+          # calculate the RSD stuff
           r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]]),
                                       meta_data = isolate(r$meta_columns),
                                       lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
 
           r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
                                      meta_data = r$meta_columns)
-      }
-      file_hostess$set(100)
-      file_hostess$close()
+        }
+        file_hostess$set(100)
+        file_hostess$close()
+      },
+      error = function(e) {
+        # empty some old data
+        r$all_data <- NULL
+        r$clean_data <- NULL
+        r$rsd_data <- vector("list", 6)
+        r$pca_model <- vector("list", 6)
+        r$meta_columns <- NULL
+        # pass the error on
+        r$errors <- e
+        # close the hostess
+        file_hostess$close()
+      })
     })
 
     # show the imported file names
@@ -123,10 +137,18 @@ mod_files_server <- function(id, r){
 
         my_list <- paste(my_list, "</ul>")
 
-        HTML(
-          "<h3>Imported files:</h3>",
-          my_list
-        )
+        if (is.null(r$errors)) {
+          HTML(
+            "<h3>Imported files:</h3>",
+            my_list
+          )
+        } else {
+          HTML(
+            "<h3>Imported files:</h3>",
+            my_list,
+            "<p style='color:red;'>", r$errors$message, "</p>"
+          )
+        }
       }
     })
 

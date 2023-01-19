@@ -34,16 +34,34 @@ read_files <- function(files = NULL, sheet_names = NULL) {
                                                           # add batch information
                                                           dplyr::mutate(batch = factor(.x),
                                                                         read_order = 1:dplyr::n()) |>
-                                                          dplyr::relocate(batch, read_order, .after = SampleID)) |>
-                                       purrr::reduce(function(...) merge(...), all = TRUE) |>
-                                       # sort and convert to batch number
-                                       dplyr::arrange(.data$batch) |>
-                                       dplyr::mutate(batch = as.factor(as.integer(.data$batch)))
-                  )
+                                                          dplyr::relocate(batch, read_order, .after = SampleID))
+                  ),
+                  # check if all columns are correct
+                  check_columns = purrr::map(.x = data,
+                                             .f = ~ sapply(.x, function(x) {
+                                               all(c("NormType", "SampleID") %in% colnames(x))
+                                             }))
     )
+
+  # check if there is a wrong column somewhere
+  check_columns <- all(sapply(all_data$check_columns, function(x) all(x)))
+
+  if(check_columns) {
+    all_data <- all_data |>
+      dplyr::mutate(data = purrr::map(.x = data,
+                                      .f = ~ .x |>
+                                        purrr::reduce(function(...) merge(...), all = TRUE) |>
+                                        # sort and convert to batch number
+                                        dplyr::arrange(.data$batch) |>
+                                        dplyr::mutate(batch = as.factor(as.integer(.data$batch)))
+      ))
+  } else {
+    stop("Not all files / sheets contain the correct column names (i.e. NormType and SampleID)!!")
+  }
 
   return(all_data)
 }
+
 
 #' @title Clean the data
 #'

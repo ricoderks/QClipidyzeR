@@ -24,7 +24,8 @@ app_server <- function(input, output, session) {
                                             "Classes conc.",
                                             "Classes comp.",
                                             "FA conc.",
-                                            "FA comp."))
+                                            "FA comp."),
+                      errors = NULL)
 
   # import files
   mod_files_server(id = "file",
