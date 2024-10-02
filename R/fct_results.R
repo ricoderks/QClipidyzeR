@@ -14,33 +14,34 @@
 #'
 #' @importFrom tidyr pivot_longer
 #' @importFrom rlang .data
-#' @importFrom dplyr if_else
+#' @importFrom dplyr if_else group_by summarise mutate
 #' @importFrom stats sd
+#' @importFrom string str_extract
 #'
 #' @noRd
 #'
 calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
+  print(meta_data)
   rsd_data <- data |>
-    filter(.data$NormType == "Pooled sample") |>
-    pivot_longer(
+    tidyr::pivot_longer(
       cols = !meta_data,
       names_to = "lipid",
       values_to = "value"
     ) |>
-    group_by(.data$lipid) |>
-    summarise(mean = mean(.data$value, na.rm = TRUE),
-              stdev = sd(.data$value, na.rm = TRUE),
-              rsd = .data$stdev / mean)
+    dplyr::group_by(.data$lipid) |>
+    dplyr::summarise(mean = mean(.data$value, na.rm = TRUE),
+                     stdev = stats::sd(.data$value, na.rm = TRUE),
+                     rsd = .data$stdev / .data$mean)
 
   # extract lipid class information for lipid species
   if(lipid_class) {
     rsd_data <- rsd_data |>
-      mutate(lipid_class = str_extract(string = .data$lipid,
-                                       pattern = "^[a-zA-Z]* O?"),
-             lipid_class = if_else(lipid_class == "Cer ",
-                                   str_extract(string = .data$lipid,
-                                               pattern = "^[a-zA-Z]* d18:[01]"),
-                                   .data$lipid_class))
+      dplyr::mutate(lipid_class = stringr::str_extract(string = .data$lipid,
+                                                       pattern = "^[a-zA-Z]* O?"),
+                    lipid_class = dplyr::if_else(lipid_class == "Cer ",
+                                                 stringr::str_extract(string = .data$lipid,
+                                                                      pattern = "^[a-zA-Z]* d18:[01]"),
+                                                 .data$lipid_class))
   }
 
   return(rsd_data)
@@ -265,12 +266,12 @@ loadings_plot <- function(model = NULL) {
                   caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
                   x = sprintf("PC 1 (%0.1f %%)", model@R2[1] * 100),
                   y = sprintf("PC 2 (%0.1f %%)", model@R2[2] * 100)) +
-  ggplot2::theme_minimal() +
-  ggplot2::theme(legend.position = "none")
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "none")
 
-ply <- plotly::ggplotly(p)
+  ply <- plotly::ggplotly(p)
 
-return(ply)
+  return(ply)
 }
 
 
@@ -290,8 +291,8 @@ return(ply)
 #'
 sumfit_plot <- function(model = NULL) {
   plot_data <- data.frame(PC = paste("PC", 1:length(model@R2cum), sep = ""),
-                           R2cum = model@R2cum,
-                           Q2cum = model@cvstat) |>
+                          R2cum = model@R2cum,
+                          Q2cum = model@cvstat) |>
     pivot_longer(cols = c(.data$R2cum, .data$Q2cum),
                  names_to = "variable",
                  values_to = "value")

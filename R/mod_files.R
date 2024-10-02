@@ -160,20 +160,15 @@ mod_files_server <- function(id, r){
         # clean the data, every column is kept (for now)
         # only keep pooled samples and samples
         # remove features which are NOT present in all pooled samples
-        print(input$sampletype_col)
         r$clean_data <- clean_data(data = r$all_data,
                                    sample_type = input$sampletype_col,
                                    qc_regex = input$qc_regex,
                                    sample_regex = input$sample_regex)
 
-        print(r$clean_data[[1]][1:20, 1:3])
-        # determine the meta data columns
-        r$meta_columns <- which(!stringr::str_detect(string = colnames(r$all_data$data[[1]]),
-                                                     pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
-
         for(a in 1:6) {
           # calculate the RSD stuff
-          r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]]),
+          r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
+                                                                             pattern = input$qc_regex), ]),
                                       meta_data = isolate(r$meta_columns),
                                       lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
 
