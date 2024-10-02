@@ -7,22 +7,20 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom bslib card
 mod_about_ui <- function(id){
-  ns <- NS(id)
-  tagList(
-    fluidRow(
-      bs4Dash::column(
-        width = 12,
-        h3("Issues"),
-        p("If you have any ideas to extend this shiny app please send me an email. If you have any issue please send me an email or go to the ",
-          a("issue tracker.", href = "http://github.com/ricoderks/QClipidyzeR/issues", target = "_blank"),
-          "Cheers, Rico"))
-    ),
-    fluidRow(
-      bs4Dash::column(
-        width = 12,
-        h3("Session info"),
-        verbatimTextOutput(ns("about_session")))
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    bslib::card(
+      shiny::h3("Issues"),
+      shiny::p("If you have any ideas to extend this shiny app please send me an email. If you have any issue please send me an email or go to the ",
+               shiny::a("issue tracker.", href = "http://github.com/ricoderks/QClipidyzeR/issues", target = "_blank"),
+               "Cheers, Rico"),
+      shiny::hr(),
+      shiny::h3("Session info"),
+      shiny::verbatimTextOutput(
+        outputId = ns("about_session")
+      )
     )
   )
 }
@@ -36,14 +34,8 @@ mod_about_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    output$about_session <- renderPrint({
-      session_info()
+    output$about_session <- shiny::renderPrint({
+      sessioninfo::session_info()
     })
   })
 }
-
-## To be copied in the UI
-# mod_about_ui("about_1")
-
-## To be copied in the server
-# mod_about_server("about_1")
