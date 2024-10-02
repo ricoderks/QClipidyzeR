@@ -19,7 +19,6 @@
 #' @noRd
 #'
 read_files <- function(files = NULL, sheet_names = NULL) {
-
   all_data <- data.frame(sheet_name = sheet_names) |>
     dplyr::mutate(full_path = list(files$datapath),
                   file = list(files$name),
@@ -33,20 +32,10 @@ read_files <- function(files = NULL, sheet_names = NULL) {
                                                                                  na = ".") |>
                                                           # add batch information
                                                           dplyr::mutate(batch = factor(.x),
-                                                                        read_order = 1:dplyr::n()) |>
-                                                          dplyr::relocate(batch, read_order, .after = SampleID))
-                  ),
-                  # check if all columns are correct
-                  check_columns = purrr::map(.x = data,
-                                             .f = ~ sapply(.x, function(x) {
-                                               all(c("NormType", "SampleID") %in% colnames(x))
-                                             }))
+                                                                        read_order = 1:dplyr::n()))
+                  )
     )
 
-  # check if there is a wrong column somewhere
-  check_columns <- all(sapply(all_data$check_columns, function(x) all(x)))
-
-  if(check_columns) {
     all_data <- all_data |>
       dplyr::mutate(data = purrr::map(.x = data,
                                       .f = ~ .x |>
@@ -55,9 +44,6 @@ read_files <- function(files = NULL, sheet_names = NULL) {
                                         dplyr::arrange(.data$batch) |>
                                         dplyr::mutate(batch = as.factor(as.integer(.data$batch)))
       ))
-  } else {
-    stop("Not all files / sheets contain the correct column names (i.e. NormType and SampleID)!!")
-  }
 
   return(all_data)
 }
@@ -67,7 +53,10 @@ read_files <- function(files = NULL, sheet_names = NULL) {
 #'
 #' @description Clean the data by removing everything except pooled samples and samples
 #'
-#' @param data data.frame, containing all the data
+#' @param data data.frame, containing all the data.
+#' @param sample_type character(1), name of the sample type column.
+#' @param qc_regex character(1), regular expression to recognize the QC samples.
+#' @param sample_regex character(1), regular expression to recognize the regular samples.
 #'
 #' @details Only the pooled samples and samples are kept. Remove also all species
 #'     which are not present in all pooled samples.
@@ -81,17 +70,28 @@ read_files <- function(files = NULL, sheet_names = NULL) {
 #'
 #' @noRd
 #'
-clean_data <- function(data = NULL) {
+clean_data <- function(data = NULL,
+                       sample_type = NULL,
+                       qc_regex = NULL,
+                       sample_regex = NULL) {
   # keep only pooled samples and samples
   clean_data <- data |>
     dplyr::mutate(clean_data = purrr::map(.x = data,
                                           .f = ~ .x |>
-                                            dplyr::filter(NormType %in% c("Pooled sample", "Samples"))))
+                                            dplyr::filter(grepl(x = .data[[sample_type]],
+                                                                pattern = qc_regex,
+                                                                ignore.case = TRUE) |
+                                                            grepl(x = .data[[sample_type]],
+                                                                  pattern = sample_regex,
+                                                                  ignore.case = TRUE))))
 
   # which features
   for(a in 1:6) {
-    data_df <- clean_data$clean_data[[a]]
-    na_pooled_idx <- apply(data_df[data_df$NormType == "Pooled sample", ], 2, function(x) {
+    data_df <- clean_data$clean_data[[a]] |>
+      dplyr::filter(grepl(x = .data[[sample_type]],
+                          pattern = qc_regex,
+                          ignore.case = TRUE))
+    na_pooled_idx <- apply(data_df, 2, function(x) {
       sum(is.na(x))
     })
     names(na_pooled_idx) <- NULL
@@ -101,7 +101,7 @@ clean_data <- function(data = NULL) {
     # convert to TRUE / FALSE, keep = TRUE, for now assuming that the meta data doesn't contain any NA's
     na_pooled_idx <- na_pooled_idx == 0
 
-    clean_data$clean_data[[a]] <- data_df[, na_pooled_idx]
+    clean_data$clean_data[[a]] <- clean_data$clean_data[[a]][, na_pooled_idx]
   }
 
   return(clean_data$clean_data)

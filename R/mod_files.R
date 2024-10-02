@@ -11,33 +11,64 @@
 #' @importFrom stringr str_detect
 #' @importFrom shiny NS tagList
 mod_files_ui <- function(id){
-  ns <- NS(id)
+  ns <- shiny::NS(id)
 
-  tagList(
-    fluidPage(
-      # initialize hostess for file loading
-      waiter::useHostess(),
-      fluidRow(
-        column = 12,
-        fileInput(
+  shiny::tagList(
+    waiter::useHostess(),
+
+    bslib::card(
+      bslib::layout_sidebar(
+        sidebar = bslib::sidebar(
+          shiny::textInput(
+            inputId = ns("batch_regex"),
+            label = "Batch regex:",
+            value = "[0-9]{12}"
+          ),
+          shiny::hr(),
+          shiny::selectInput(
+            inputId = ns("sampleid_col"),
+            label = "Sample ID column:",
+            choices = "Select a column"
+          ),
+          shiny::selectInput(
+            inputId = ns("sampletype_col"),
+            label = "Sample type column:",
+            choices = "Select a column"
+          ),
+          shiny::textInput(
+            inputId = ns("qc_regex"),
+            label = "QC sample regex:",
+            value = "Quality"
+          ),
+          shiny::textInput(
+            inputId = ns("sample_regex"),
+            label = "Sample regex:",
+            value = "(Ref|Bench|lg-term)"
+          )
+        ),
+        shiny::fileInput(
           inputId = ns("import_files"),
           label = "Select .xlsx files:",
           accept = ".xlsx",
           multiple = TRUE
         ),
-      ),
-      fluidRow(
-        column = 12,
         uiOutput(outputId = ns("files_imported")),
-        textOutput(outputId = ns("debug"))
-      ),
-      # place the hostess on the page
-      waiter::hostess_loader(
-        id = "loader",
-        preset = "circle",
-        text_color = "black",
-        class = "label-center",
-        center_page = TRUE
+        textOutput(outputId = ns("debug")),
+        shinyjs::disabled(
+          shiny::actionButton(
+            inputId = ns("import_data"),
+            label = "Import data"
+          )
+        ),
+
+        # place the hostess on the page
+        waiter::hostess_loader(
+          id = "loader",
+          preset = "circle",
+          text_color = "black",
+          class = "label-center",
+          center_page = TRUE
+        )
       )
     )
   )
@@ -45,7 +76,7 @@ mod_files_ui <- function(id){
 
 #' files Server Functions
 #'
-#' @importFrom stringr str_extract
+#' @importFrom stringr str_extract str_detect
 #' @importFrom waiter Waitress
 #'
 #' @noRd
@@ -57,16 +88,22 @@ mod_files_server <- function(id, r){
     file_hostess <- waiter::Hostess$new(id = "loader")
 
     # import the files
-    observeEvent(input$import_files, {
+    shiny::observeEvent(input$import_files, {
+      shiny::req(input$batch_regex)
+
       r$errors <- NULL
+      batch_regex <- input$batch_regex
 
       tryCatch({
         # get the file names
         my_files <- input$import_files
 
         if (!is.null(my_files)) {
-          batches <- str_extract(string = my_files$name,
-                                 pattern = "[bB][aA][tT][cC][hH][ -_]?[0-9]{1,2}")
+          batches <- stringr::str_extract(string = my_files$name,
+                                          pattern = batch_regex)
+
+          print("Show batches:")
+          print(batches)
 
           # sort the files according to the batch order
           r$files <- my_files[order(batches), ]
@@ -78,32 +115,26 @@ mod_files_server <- function(id, r){
         r$all_data <- read_files(files = r$files,
                                  sheet_names = r$sheet_names)
 
-
         file_hostess$set(60)
 
+        r$meta_columns <-
+          colnames(r$all_data$data[[1]])[!stringr::str_detect(string = colnames(r$all_data$data[[1]]),
+                                                              pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}")]
 
-        # clean the data, every column is kept (for now)
-        # only keep pooled samples and samples
-        # remove features which are NOT present in all pooled samples
-        r$clean_data <- clean_data(data = r$all_data)
+        shiny::updateSelectInput(
+          inputId = "sampleid_col",
+          choices = r$meta_columns,
+          selected = r$meta_columns[1]
+        )
+        shiny::updateSelectInput(
+          inputId = "sampletype_col",
+          choices = r$meta_columns,
+          selected = r$meta_columns[1]
+        )
 
-        file_hostess$set(70)
+        shinyjs::enable(id = "import_data")
 
-        # determine the meta data columns
-        r$meta_columns <- which(!str_detect(string = colnames(r$all_data$data[[1]]),
-                                            pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
 
-        file_hostess$set(80)
-
-        for(a in 1:6) {
-          # calculate the RSD stuff
-          r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]]),
-                                      meta_data = isolate(r$meta_columns),
-                                      lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
-
-          r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
-                                     meta_data = r$meta_columns)
-        }
         file_hostess$set(100)
         file_hostess$close()
       },
@@ -112,19 +143,62 @@ mod_files_server <- function(id, r){
         file_hostess$close()
         # empty some old data
         r$all_data <- NULL
-        r$clean_data <- NULL
-        r$rsd_data <- vector("list", 6)
-        r$pca_model <- vector("list", 6)
         r$meta_columns <- NULL
         # pass the error on
         r$errors <- e
       })
     })
 
+
+    shiny::observeEvent(input$import_data, {
+      shiny::req(r$all_data,
+                 input$sampletype_col,
+                 input$qc_regex,
+                 input$sample_regex)
+
+      tryCatch({
+        # clean the data, every column is kept (for now)
+        # only keep pooled samples and samples
+        # remove features which are NOT present in all pooled samples
+        print(input$sampletype_col)
+        r$clean_data <- clean_data(data = r$all_data,
+                                   sample_type = input$sampletype_col,
+                                   qc_regex = input$qc_regex,
+                                   sample_regex = input$sample_regex)
+
+        print(r$clean_data[[1]][1:20, 1:3])
+        # determine the meta data columns
+        r$meta_columns <- which(!stringr::str_detect(string = colnames(r$all_data$data[[1]]),
+                                                     pattern = "^[a-zA-Z]* [dPO]?-?[0-9]{1,2}:[0-9]{1,2}"))
+
+        for(a in 1:6) {
+          # calculate the RSD stuff
+          r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]]),
+                                      meta_data = isolate(r$meta_columns),
+                                      lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
+
+          # r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
+          #                            meta_data = r$meta_columns)
+        }
+      },
+      error = function(e) {
+        # close the hostess
+        file_hostess$close()
+        # empty some old data
+        r$clean_data <- NULL
+        r$rsd_data <- vector("list", 6)
+        r$pca_model <- vector("list", 6)
+        # pass the error on
+        r$errors <- e
+      })
+
+    })
+
+
     # show the imported file names
-    output$files_imported <- renderUI({
-      req(r$files,
-          r$rsd_data)
+    output$files_imported <- shiny::renderUI({
+      shiny::req(r$files,
+                 r$rsd_data)
 
       if(!is.null(r$files)) {
         my_list <- "<ul>"
@@ -151,7 +225,7 @@ mod_files_server <- function(id, r){
     })
 
     # just for some debugging
-    output$debug <- renderText({
+    output$debug <- shiny::renderText({
 
       # print(my_files()$name)
       # print(class(r$all_data()))

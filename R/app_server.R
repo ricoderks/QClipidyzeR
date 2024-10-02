@@ -11,13 +11,14 @@ app_server <- function(input, output, session) {
                       all_data = NULL,
                       clean_data = NULL,
                       rsd_data = vector("list", 6),
+                      trend_data = vector("list", 6),
                       pca_model = vector("list", 6),
                       meta_columns = NULL,
-                      sheet_names = c("Lipid Species Conc (nmolg)",
+                      sheet_names = c("Lipid Species Conc (nmol_g)",
                                       "Lipid Species Composition (%)",
-                                      "Lipid Class Conc (nmolg)",
+                                      "Lipid Class Conc (nmol_g)",
                                       "Lipid Class Composition (%)",
-                                      "Fatty Acid Conc (nmolg)",
+                                      "Fatty Acid Conc (nmol_g)",
                                       "Fatty Acid Composition (%)"),
                       sheet_names_short = c("Species conc.",
                                             "Species comp.",
@@ -31,17 +32,17 @@ app_server <- function(input, output, session) {
   mod_files_server(id = "file",
                    r = r)
 
-  # show the data
-  mod_data_server(id = "data",
-                  r = r)
-
-  # show the plots
-  mod_results_server(id = "results",
-                     r = r)
-
-  # help module
-  mod_help_server(id = "help")
-
-  # about module
-  mod_about_server(id = "about")
+  # # show the data
+  # mod_data_server(id = "data",
+  #                 r = r)
+  #
+  # # show the plots
+  # mod_results_server(id = "results",
+  #                    r = r)
+  #
+  # # help module
+  # mod_help_server(id = "help")
+  #
+  # # about module
+  # mod_about_server(id = "about")
 }
