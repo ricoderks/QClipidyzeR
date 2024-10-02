@@ -13,9 +13,40 @@
 #' @importFrom DT DTOutput renderDT
 #'
 mod_results_ui <- function(id){
-  ns <- NS(id)
-  tagList(
-    uiOutput(outputId = ns("plot_tabs"))
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    bslib::navset_card_tab(
+      bslib::nav_panel(
+        title = "Species conc.",
+        bslib::card(
+          mod_rsd_ui(id = ns("rsd_sheet1"))
+        )
+      ),
+      bslib::nav_panel(
+        title = "Species comp.",
+        bslib::card(
+          bslib::card_body(
+            mod_rsd_ui(id = ns("rsd_sheet2"))
+          )
+        )
+      ),
+      bslib::nav_panel(
+        title = "Classes conc.",
+        bslib::card(
+          bslib::card_body(
+            mod_rsd_ui(id = ns("rsd_sheet3"))
+          )
+        )
+      ),
+      bslib::nav_panel(
+        title = "Classes comp.",
+        bslib::card(
+          bslib::card_body(
+            mod_rsd_ui(id = ns("rsd_sheet4"))
+          )
+        )
+      )
+    )
   )
 }
 
@@ -25,42 +56,6 @@ mod_results_ui <- function(id){
 mod_results_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
-    output$plot_tabs <- renderUI({
-      bs4Dash::tabsetPanel(
-        id = "plot_tabset",
-        tabPanel(
-          title = r$sheet_names_short[1],
-          mod_rsd_ui(id = ns("rsd_sheet1")),
-          mod_pca_ui(id = ns("pca_sheet1"))
-        ),
-        tabPanel(
-          title = r$sheet_names_short[2],
-          mod_rsd_ui(id = ns("rsd_sheet2")),
-          mod_pca_ui(id = ns("pca_sheet2"))
-        ),
-        tabPanel(
-          title = r$sheet_names_short[3],
-          mod_pca_ui(id = ns("pca_sheet3")),
-          mod_rsd_ui(id = ns("rsd_sheet3"))
-        ),
-        tabPanel(
-          title = r$sheet_names_short[4],
-          mod_pca_ui(id = ns("pca_sheet4")),
-          mod_rsd_ui(id = ns("rsd_sheet4"))
-        ),
-        tabPanel(
-          title = r$sheet_names_short[5],
-          mod_rsd_ui(id = ns("rsd_sheet5")),
-          mod_pca_ui(id = ns("pca_sheet5"))
-        ),
-        tabPanel(
-          title = r$sheet_names_short[6],
-          mod_rsd_ui(id = ns("rsd_sheet6")),
-          mod_pca_ui(id = ns("pca_sheet6"))
-        )
-      )
-    })
 
     ##### RSD stuff #####
     mod_rsd_server(id = "rsd_sheet1",
@@ -79,39 +74,39 @@ mod_results_server <- function(id, r){
                    r = r,
                    sheet = 4)
 
-    mod_rsd_server(id = "rsd_sheet5",
-                   r = r,
-                   sheet = 5)
-
-    mod_rsd_server(id = "rsd_sheet6",
-                   r = r,
-                   sheet = 6)
+    # mod_rsd_server(id = "rsd_sheet5",
+    #                r = r,
+    #                sheet = 5)
+    #
+    # mod_rsd_server(id = "rsd_sheet6",
+    #                r = r,
+    #                sheet = 6)
     #####################
 
-    ##### PCA stuff #####
-    mod_pca_server(id = "pca_sheet1",
-                   r = r,
-                   sheet = 1)
-
-    mod_pca_server(id = "pca_sheet2",
-                   r = r,
-                   sheet = 2)
-
-    mod_pca_server(id = "pca_sheet3",
-                   r = r,
-                   sheet = 3)
-
-    mod_pca_server(id = "pca_sheet4",
-                   r = r,
-                   sheet = 4)
-
-    mod_pca_server(id = "pca_sheet5",
-                   r = r,
-                   sheet = 5)
-
-    mod_pca_server(id = "pca_sheet6",
-                   r = r,
-                   sheet = 6)
+    # ##### PCA stuff #####
+    # mod_pca_server(id = "pca_sheet1",
+    #                r = r,
+    #                sheet = 1)
+    #
+    # mod_pca_server(id = "pca_sheet2",
+    #                r = r,
+    #                sheet = 2)
+    #
+    # mod_pca_server(id = "pca_sheet3",
+    #                r = r,
+    #                sheet = 3)
+    #
+    # mod_pca_server(id = "pca_sheet4",
+    #                r = r,
+    #                sheet = 4)
+    #
+    # mod_pca_server(id = "pca_sheet5",
+    #                r = r,
+    #                sheet = 5)
+    #
+    # mod_pca_server(id = "pca_sheet6",
+    #                r = r,
+    #                sheet = 6)
     #####################
 
 

@@ -168,10 +168,10 @@ mod_files_server <- function(id, r){
 
         for(a in 1:6) {
           # calculate the RSD stuff
-          # r$rsd_data[[a]] <- calc_rsd(data = r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
-          #                                                            pattern = input$qc_regex), ],
-          #                             meta_data = r$meta_columns,
-          #                             lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
+          r$rsd_data[[a]] <- calc_rsd(data = r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
+                                                                     pattern = input$qc_regex), ],
+                                      meta_data = r$meta_columns,
+                                      lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
 
           # r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
           #                            meta_data = r$meta_columns)

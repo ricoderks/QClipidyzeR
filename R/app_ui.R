@@ -36,7 +36,7 @@ app_ui <- function(request) {
       ),
       bslib::nav_panel(
         title = "Results",
-        # mod_results_ui(id = "results")
+        mod_results_ui(id = "results")
       ),
       bslib::nav_spacer(),
       bslib::nav_menu(

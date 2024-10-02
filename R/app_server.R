@@ -36,13 +36,13 @@ app_server <- function(input, output, session) {
   mod_data_server(id = "data",
                   r = r)
 
-  # # show the plots
-  # mod_results_server(id = "results",
-  #                    r = r)
-  #
-  # # help module
-  # mod_help_server(id = "help")
-  #
-  # # about module
-  # mod_about_server(id = "about")
+  # show the plots
+  mod_results_server(id = "results",
+                     r = r)
+
+  # help module
+  mod_help_server(id = "help")
+
+  # about module
+  mod_about_server(id = "about")
 }
