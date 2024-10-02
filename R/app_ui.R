@@ -4,7 +4,7 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @import bslib
-#' @import shinyjs
+#' @importFrom shinyjs useShinyjs
 #' @importFrom utils packageVersion
 #'
 #' @noRd
@@ -32,7 +32,7 @@ app_ui <- function(request) {
       ),
       bslib::nav_panel(
         title = "Data",
-        # mod_data_ui(id = "data")
+        mod_data_ui(id = "data")
       ),
       bslib::nav_panel(
         title = "Results",

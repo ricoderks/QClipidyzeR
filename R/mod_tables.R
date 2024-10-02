@@ -10,8 +10,8 @@
 #'
 #' @importFrom shiny NS tagList
 mod_tables_ui <- function(id){
-  ns <- NS(id)
-  tagList(
+  ns <- shiny::NS(id)
+  shiny::tagList(
     DT::DTOutput(outputId = ns("data_sheet"))
   )
 }
@@ -24,9 +24,9 @@ mod_tables_server <- function(id, r, sheet){
     ns <- session$ns
 
     output$data_sheet <- DT::renderDT({
-      req(r$all_data)
+      req(r$clean_data)
 
-      if(!is.null(r$all_data)) {
+      if(!is.null(r$clean_data)) {
         show_data <- r$clean_data[[sheet]]
 
         show_data
@@ -37,9 +37,3 @@ mod_tables_server <- function(id, r, sheet){
     )
   })
 }
-
-## To be copied in the UI
-# mod_tables_ui("tables_1")
-
-## To be copied in the server
-# mod_tables_server("tables_1")

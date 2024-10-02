@@ -6,52 +6,64 @@
 #' @param r is a reactiveValues object containing all information
 #' @noRd
 #'
-#' @importFrom DT DTOutput
-#' @importFrom shiny NS tagList
+#' @importFrom shiny NS tagList uiOutput
 #'
 mod_data_ui <- function(id){
-  ns <- NS(id)
-  tagList(
-    uiOutput(outputId = ns("data_tabs"))
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    shiny::uiOutput(outputId = ns("data_tabs"))
   )
 }
 
 #' data Server Functions
 #'
-#' @importFrom DT renderDT
-#' @import bs4Dash
+#' @importFrom bslib navset_card_tab nav_panel card
+#' @importFrom shiny uiOutput
 #'
 #' @noRd
 mod_data_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    output$data_tabs <- renderUI({
-      bs4Dash::tabsetPanel(
-        id = "data_tabset",
-        tabPanel(
+    output$data_tabs <- shiny::renderUI({
+      bslib::navset_card_tab(
+        bslib::nav_panel(
           title = r$sheet_names_short[1],
-          mod_tables_ui(id = ns("data_sheet1"))
+          bslib::card(
+            bslib::card_body(
+              mod_tables_ui(id = ns("data_sheet1"))
+            )
+          )
         ),
-        tabPanel(
+        bslib::nav_panel(
           title = r$sheet_names_short[2],
-          mod_tables_ui(id = ns("data_sheet2"))
+          bslib::card(
+            mod_tables_ui(id = ns("data_sheet2"))
+          )
         ),
-        tabPanel(
+        bslib::nav_panel(
           title = r$sheet_names_short[3],
-          mod_tables_ui(id = ns("data_sheet3"))
+          bslib::card(
+            mod_tables_ui(id = ns("data_sheet3"))
+          )
         ),
-        tabPanel(
+        bslib::nav_panel(
           title = r$sheet_names_short[4],
-          mod_tables_ui(id = ns("data_sheet4"))
+          bslib::card(
+            mod_tables_ui(id = ns("data_sheet4"))
+          )
         ),
-        tabPanel(
+        bslib::nav_panel(
           title = r$sheet_names_short[5],
-          mod_tables_ui(id = ns("data_sheet5"))
+          bslib::card(
+            mod_tables_ui(id = ns("data_sheet5"))
+          )
         ),
-        tabPanel(
+        bslib::nav_panel(
           title = r$sheet_names_short[6],
-          mod_tables_ui(id = ns("data_sheet6"))
+          bslib::card(
+            mod_tables_ui(id = ns("data_sheet6"))
+          )
         )
       )
     })

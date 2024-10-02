@@ -32,10 +32,10 @@ app_server <- function(input, output, session) {
   mod_files_server(id = "file",
                    r = r)
 
-  # # show the data
-  # mod_data_server(id = "data",
-  #                 r = r)
-  #
+  # show the data
+  mod_data_server(id = "data",
+                  r = r)
+
   # # show the plots
   # mod_results_server(id = "results",
   #                    r = r)

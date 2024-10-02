@@ -10,6 +10,7 @@
 #' @import waiter
 #' @importFrom stringr str_detect
 #' @importFrom shiny NS tagList
+#' @importFrom shinyjs disabled enable
 mod_files_ui <- function(id){
   ns <- shiny::NS(id)
 
@@ -175,6 +176,7 @@ mod_files_server <- function(id, r){
           # r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
           #                            meta_data = r$meta_columns)
         }
+        print("done")
       },
       error = function(e) {
         # close the hostess
