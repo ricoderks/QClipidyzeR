@@ -11,7 +11,46 @@
 mod_data_ui <- function(id){
   ns <- shiny::NS(id)
   shiny::tagList(
-    shiny::uiOutput(outputId = ns("data_tabs"))
+    bslib::navset_card_tab(
+      bslib::nav_panel(
+        title = "Species conc.",
+        bslib::card(
+          # bslib::card_body(
+          mod_tables_ui(id = ns("data_sheet1"))
+          # )
+        )
+      ),
+      bslib::nav_panel(
+        title = "Species comp.",
+        bslib::card(
+          mod_tables_ui(id = ns("data_sheet2"))
+        )
+      ),
+      bslib::nav_panel(
+        title = "Classes conc.",
+        bslib::card(
+          mod_tables_ui(id = ns("data_sheet3"))
+        )
+      ),
+      bslib::nav_panel(
+        title = "Classes comp.",
+        bslib::card(
+          mod_tables_ui(id = ns("data_sheet4"))
+        )
+      ),
+      bslib::nav_panel(
+        title = "FA conc.",
+        bslib::card(
+          mod_tables_ui(id = ns("data_sheet5"))
+        )
+      ),
+      bslib::nav_panel(
+        title = "FA comp.",
+        bslib::card(
+          mod_tables_ui(id = ns("data_sheet6"))
+        )
+      )
+    )
   )
 }
 
@@ -24,49 +63,6 @@ mod_data_ui <- function(id){
 mod_data_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-
-    output$data_tabs <- shiny::renderUI({
-      bslib::navset_card_tab(
-        bslib::nav_panel(
-          title = r$sheet_names_short[1],
-          bslib::card(
-            bslib::card_body(
-              mod_tables_ui(id = ns("data_sheet1"))
-            )
-          )
-        ),
-        bslib::nav_panel(
-          title = r$sheet_names_short[2],
-          bslib::card(
-            mod_tables_ui(id = ns("data_sheet2"))
-          )
-        ),
-        bslib::nav_panel(
-          title = r$sheet_names_short[3],
-          bslib::card(
-            mod_tables_ui(id = ns("data_sheet3"))
-          )
-        ),
-        bslib::nav_panel(
-          title = r$sheet_names_short[4],
-          bslib::card(
-            mod_tables_ui(id = ns("data_sheet4"))
-          )
-        ),
-        bslib::nav_panel(
-          title = r$sheet_names_short[5],
-          bslib::card(
-            mod_tables_ui(id = ns("data_sheet5"))
-          )
-        ),
-        bslib::nav_panel(
-          title = r$sheet_names_short[6],
-          bslib::card(
-            mod_tables_ui(id = ns("data_sheet6"))
-          )
-        )
-      )
-    })
 
     mod_tables_server(id = "data_sheet1",
                       r = r,
