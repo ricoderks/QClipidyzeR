@@ -16,12 +16,11 @@
 #' @importFrom rlang .data
 #' @importFrom dplyr if_else group_by summarise mutate
 #' @importFrom stats sd
-#' @importFrom string str_extract
+#' @importFrom stringr str_extract
 #'
 #' @noRd
 #'
 calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
-  print(meta_data)
   rsd_data <- data |>
     tidyr::pivot_longer(
       cols = !meta_data,
