@@ -168,10 +168,10 @@ mod_files_server <- function(id, r){
 
         for(a in 1:6) {
           # calculate the RSD stuff
-          r$rsd_data[[a]] <- calc_rsd(data = isolate(r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
-                                                                             pattern = input$qc_regex), ]),
-                                      meta_data = isolate(r$meta_columns),
-                                      lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
+          # r$rsd_data[[a]] <- calc_rsd(data = r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
+          #                                                            pattern = input$qc_regex), ],
+          #                             meta_data = r$meta_columns,
+          #                             lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
 
           # r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
           #                            meta_data = r$meta_columns)
@@ -194,8 +194,7 @@ mod_files_server <- function(id, r){
 
     # show the imported file names
     output$files_imported <- shiny::renderUI({
-      shiny::req(r$files,
-                 r$rsd_data)
+      shiny::req(r$files)
 
       if(!is.null(r$files)) {
         my_list <- "<ul>"
