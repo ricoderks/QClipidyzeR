@@ -64,7 +64,14 @@ mod_files_ui <- function(id){
 
         # place the hostess on the page
         waiter::hostess_loader(
-          id = "loader",
+          id = "loader_file",
+          preset = "circle",
+          text_color = "black",
+          class = "label-center",
+          center_page = TRUE
+        ),
+        waiter::hostess_loader(
+          id = "loader_import",
           preset = "circle",
           text_color = "black",
           class = "label-center",
@@ -86,7 +93,8 @@ mod_files_server <- function(id, r){
     ns <- session$ns
 
     # create new hostess
-    file_hostess <- waiter::Hostess$new(id = "loader")
+    file_hostess <- waiter::Hostess$new(id = "loader_file")
+    import_hostess <- waiter::Hostess$new(id = "loader_import")
 
     # import the files
     shiny::observeEvent(input$import_files, {
@@ -110,13 +118,13 @@ mod_files_server <- function(id, r){
           r$files <- my_files[order(batches), ]
         }
 
-        file_hostess$set(10)
+        file_hostess$set(80)
 
         # read all the files
         r$all_data <- read_files(files = r$files,
                                  sheet_names = r$sheet_names)
 
-        file_hostess$set(60)
+        file_hostess$set(90)
 
         r$meta_columns <-
           colnames(r$all_data$data[[1]])[!stringr::str_detect(string = colnames(r$all_data$data[[1]]),
@@ -157,7 +165,9 @@ mod_files_server <- function(id, r){
                  input$qc_regex,
                  input$sample_regex)
 
+      import_hostess$set(10)
       tryCatch({
+        import_hostess$set(10)
         # clean the data, every column is kept (for now)
         # only keep pooled samples and samples
         # remove features which are NOT present in all pooled samples
@@ -166,15 +176,23 @@ mod_files_server <- function(id, r){
                                    qc_regex = input$qc_regex,
                                    sample_regex = input$sample_regex)
 
+        import_hostess$set(40)
+
+        progress <- 40
         for(a in 1:6) {
           # calculate the RSD stuff
           r$rsd_data[[a]] <- calc_rsd(data = r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
                                                                      pattern = input$qc_regex), ],
                                       meta_data = r$meta_columns,
                                       lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
+          progress <- progress + 5
+          import_hostess$set(progress)
 
-          # r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
-          #                            meta_data = r$meta_columns)
+          r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
+                                     meta_data = r$meta_columns)
+
+          progress <- progress + 5
+          import_hostess$set(progress)
         }
         print("done")
       },

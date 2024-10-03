@@ -45,7 +45,6 @@ mod_rsd_server <- function(id, r, sheet){
       shiny::req(r$rsd_data)
 
       if(!is.null(r$rsd_data[[sheet]])) {
-          print("Create the plot 2")
           p <- create_rsd_hist(data = r$rsd_data[[sheet]])
           p
       }

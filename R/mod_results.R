@@ -16,14 +16,20 @@ mod_results_ui <- function(id){
       bslib::nav_panel(
         title = "Species conc.",
         bslib::card(
-          mod_rsd_ui(id = ns("rsd_sheet1"))
+          bslib::layout_column_wrap(
+            mod_rsd_ui(id = ns("rsd_sheet1")),
+            mod_pca_ui(id = ns("pca_sheet1"))
+          )
         )
       ),
       bslib::nav_panel(
         title = "Species comp.",
         bslib::card(
           bslib::card_body(
-            mod_rsd_ui(id = ns("rsd_sheet2"))
+            bslib::layout_column_wrap(
+              mod_rsd_ui(id = ns("rsd_sheet2")),
+              mod_pca_ui(id = ns("pca_sheet2"))
+            )
           )
         )
       ),
@@ -31,7 +37,10 @@ mod_results_ui <- function(id){
         title = "Classes conc.",
         bslib::card(
           bslib::card_body(
-            mod_rsd_ui(id = ns("rsd_sheet3"))
+            bslib::layout_column_wrap(
+              mod_rsd_ui(id = ns("rsd_sheet3")),
+              mod_pca_ui(id = ns("pca_sheet3"))
+            )
           )
         )
       ),
@@ -39,7 +48,10 @@ mod_results_ui <- function(id){
         title = "Classes comp.",
         bslib::card(
           bslib::card_body(
-            mod_rsd_ui(id = ns("rsd_sheet4"))
+            bslib::layout_column_wrap(
+              mod_rsd_ui(id = ns("rsd_sheet4")),
+              mod_pca_ui(id = ns("pca_sheet4"))
+            )
           )
         )
       ),
@@ -47,7 +59,10 @@ mod_results_ui <- function(id){
         title = "FA conc.",
         bslib::card(
           bslib::card_body(
-            mod_rsd_ui(id = ns("rsd_sheet5"))
+            bslib::layout_column_wrap(
+              mod_rsd_ui(id = ns("rsd_sheet5")),
+              mod_pca_ui(id = ns("pca_sheet5"))
+            )
           )
         )
       ),
@@ -55,7 +70,10 @@ mod_results_ui <- function(id){
         title = "fA comp.",
         bslib::card(
           bslib::card_body(
-            mod_rsd_ui(id = ns("rsd_sheet6"))
+            bslib::layout_column_wrap(
+              mod_rsd_ui(id = ns("rsd_sheet6")),
+              mod_pca_ui(id = ns("pca_sheet6"))
+            )
           )
         )
       )
@@ -96,30 +114,30 @@ mod_results_server <- function(id, r){
                    sheet = 6)
     #####################
 
-    # ##### PCA stuff #####
-    # mod_pca_server(id = "pca_sheet1",
-    #                r = r,
-    #                sheet = 1)
-    #
-    # mod_pca_server(id = "pca_sheet2",
-    #                r = r,
-    #                sheet = 2)
-    #
-    # mod_pca_server(id = "pca_sheet3",
-    #                r = r,
-    #                sheet = 3)
-    #
-    # mod_pca_server(id = "pca_sheet4",
-    #                r = r,
-    #                sheet = 4)
-    #
-    # mod_pca_server(id = "pca_sheet5",
-    #                r = r,
-    #                sheet = 5)
-    #
-    # mod_pca_server(id = "pca_sheet6",
-    #                r = r,
-    #                sheet = 6)
+    ##### PCA stuff #####
+    mod_pca_server(id = "pca_sheet1",
+                   r = r,
+                   sheet = 1)
+
+    mod_pca_server(id = "pca_sheet2",
+                   r = r,
+                   sheet = 2)
+
+    mod_pca_server(id = "pca_sheet3",
+                   r = r,
+                   sheet = 3)
+
+    mod_pca_server(id = "pca_sheet4",
+                   r = r,
+                   sheet = 4)
+
+    mod_pca_server(id = "pca_sheet5",
+                   r = r,
+                   sheet = 5)
+
+    mod_pca_server(id = "pca_sheet6",
+                   r = r,
+                   sheet = 6)
     #####################
 
 
