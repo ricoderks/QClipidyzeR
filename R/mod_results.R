@@ -8,9 +8,6 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-#' @import bs4Dash
-#' @import plotly
-#' @importFrom DT DTOutput renderDT
 #'
 mod_results_ui <- function(id){
   ns <- shiny::NS(id)
@@ -45,6 +42,22 @@ mod_results_ui <- function(id){
             mod_rsd_ui(id = ns("rsd_sheet4"))
           )
         )
+      ),
+      bslib::nav_panel(
+        title = "FA conc.",
+        bslib::card(
+          bslib::card_body(
+            mod_rsd_ui(id = ns("rsd_sheet5"))
+          )
+        )
+      ),
+      bslib::nav_panel(
+        title = "fA comp.",
+        bslib::card(
+          bslib::card_body(
+            mod_rsd_ui(id = ns("rsd_sheet6"))
+          )
+        )
       )
     )
   )
@@ -74,13 +87,13 @@ mod_results_server <- function(id, r){
                    r = r,
                    sheet = 4)
 
-    # mod_rsd_server(id = "rsd_sheet5",
-    #                r = r,
-    #                sheet = 5)
-    #
-    # mod_rsd_server(id = "rsd_sheet6",
-    #                r = r,
-    #                sheet = 6)
+    mod_rsd_server(id = "rsd_sheet5",
+                   r = r,
+                   sheet = 5)
+
+    mod_rsd_server(id = "rsd_sheet6",
+                   r = r,
+                   sheet = 6)
     #####################
 
     # ##### PCA stuff #####

@@ -67,7 +67,8 @@ create_rsd_hist <- function(data = NULL) {
     dplyr::mutate(rsd = .data$rsd * 100) |>
     ggplot2::ggplot(ggplot2::aes(x = .data$rsd,
                                  fill = .data$lipid_class)) +
-    ggplot2::geom_histogram(bins = 100) +
+    ggplot2::geom_histogram(bins = 100,
+                            alpha = 0.5) +
     ggplot2::geom_vline(xintercept = 30,
                         colour = "red",
                         linetype = 2) +
@@ -76,9 +77,9 @@ create_rsd_hist <- function(data = NULL) {
     # ggplot2::guides(fill = ggplot2::guide_legend(title = "Lipid class")) +
     ggplot2::theme_minimal()
 
-  ply <- plotly::ggplotly(p)
+  # ply <- plotly::ggplotly(p)
 
-  return(ply)
+  return(p)
 }
 
 #' @title Create nice table with RSD values
