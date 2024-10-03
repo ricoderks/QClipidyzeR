@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-#' @importFrom shiny card
+#' @importFrom bslib card
 mod_help_ui <- function(id){
   ns <- shiny::NS(id)
 
