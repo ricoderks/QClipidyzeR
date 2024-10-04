@@ -12,10 +12,16 @@
 mod_results_ui <- function(id){
   ns <- shiny::NS(id)
 
+  if(id == "sheet3" | id == "sheet4") {
+    title <- "RSD table"
+  } else {
+    title = "RSD histogram"
+  }
+
   shiny::tagList(
     bslib::navset_card_tab(
       bslib::nav_panel(
-        title = "RSD histogram",
+        title = title,
         bslib::card(
           mod_rsd_ui(id = ns(paste0("rsd_", id))),
         )

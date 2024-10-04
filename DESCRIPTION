@@ -1,6 +1,6 @@
 Package: QClipidyzeR
 Title: QC lipidyzer data
-Version: 0.9.9008
+Version: 0.9.9009
 Authors@R: 
     person("Rico", "Derks", , "r.j.e.derks@lumc.nl", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-8920-7133"))
