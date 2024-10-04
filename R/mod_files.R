@@ -44,7 +44,7 @@ mod_files_ui <- function(id){
           shiny::textInput(
             inputId = ns("sample_regex"),
             label = "Sample regex:",
-            value = "(Ref|Bench|lg-term)"
+            value = "(Ref|Bench|lg-term|AS|f/t)"
           )
         ),
         shiny::fileInput(
@@ -58,11 +58,11 @@ mod_files_ui <- function(id){
         shinyjs::disabled(
           shiny::actionButton(
             inputId = ns("import_data"),
-            label = "Import data"
+            label = "Import data",
+            width = "20%"
           )
         ),
 
-        # place the hostess on the page
         waiter::hostess_loader(
           id = "loader_file",
           preset = "circle",
@@ -92,20 +92,17 @@ mod_files_server <- function(id, r){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    # create new hostess
-    file_hostess <- waiter::Hostess$new(id = "loader_file")
-    import_hostess <- waiter::Hostess$new(id = "loader_import")
-
     # import the files
     shiny::observeEvent(input$import_files, {
       shiny::req(input$batch_regex)
 
       r$errors <- NULL
-      batch_regex <- input$batch_regex
 
       tryCatch({
-        # get the file names
+        file_hostess <- waiter::Hostess$new(id = "loader_file")
+
         my_files <- input$import_files
+        batch_regex <- input$batch_regex
 
         if (!is.null(my_files)) {
           batches <- stringr::str_extract(string = my_files$name,
@@ -141,11 +138,10 @@ mod_files_server <- function(id, r){
           selected = r$meta_columns[1]
         )
 
-        shinyjs::enable(id = "import_data")
-
-
         file_hostess$set(100)
         file_hostess$close()
+
+        shinyjs::enable(id = "import_data")
       },
       error = function(e) {
         # close the hostess
@@ -165,8 +161,11 @@ mod_files_server <- function(id, r){
                  input$qc_regex,
                  input$sample_regex)
 
-      import_hostess$set(10)
       tryCatch({
+        shinyjs::disable(id = "import_data")
+        print("Start data import")
+
+        import_hostess <- waiter::Hostess$new(id = "loader_import")
         import_hostess$set(10)
         # clean the data, every column is kept (for now)
         # only keep pooled samples and samples
@@ -175,6 +174,9 @@ mod_files_server <- function(id, r){
                                    sample_type = input$sampletype_col,
                                    qc_regex = input$qc_regex,
                                    sample_regex = input$sample_regex)
+
+        # an extra meta column was added by clean_data(), add here
+        r$meta_columns <- c(r$meta_columns, "sample_type")
 
         import_hostess$set(40)
 
@@ -198,7 +200,7 @@ mod_files_server <- function(id, r){
       },
       error = function(e) {
         # close the hostess
-        file_hostess$close()
+        import_hostess$close()
         # empty some old data
         r$clean_data <- NULL
         r$rsd_data <- vector("list", 6)
@@ -237,6 +239,17 @@ mod_files_server <- function(id, r){
         }
       }
     })
+
+
+    shiny::observeEvent(c(input$sampleid_col,
+                          input$sampletype_col,
+                          input$qc_regex,
+                          input$sample_regex), {
+                            # after changing something make possible to re-import
+                            # the data
+                            shinyjs::enable(id = "import_data")
+    })
+
 
     # just for some debugging
     output$debug <- shiny::renderText({

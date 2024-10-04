@@ -183,9 +183,9 @@ scores_plot <- function(model = NULL,
     plot_data <- plot_data[plot_data$batch %in% batch, ]
   }
 
-  # if(!is.null(sample_type)) {
-  #   plot_data <- plot_data[plot_data$NormType %in% sample_type, ]
-  # }
+  if(!is.null(sample_type)) {
+    plot_data <- plot_data[plot_data$sample_type %in% sample_type, ]
+  }
 
   # create the colors for the batches
   batch_colors <- c(
@@ -196,8 +196,8 @@ scores_plot <- function(model = NULL,
   names(batch_colors) <- as.character(1:length(batch_colors))
 
   # create the shapes for the sample type, 16 = circle, 17 = triangle
-  # sample_types <- c("Pooled sample" = 16,
-  #                   "Samples" = 17)
+  sample_types <- c("qc" = 16,
+                    "sample" = 17)
 
   p <- plot_data |>
     ggplot2::ggplot() +
@@ -213,11 +213,11 @@ scores_plot <- function(model = NULL,
     ggplot2::geom_point(data = plot_data,
                         ggplot2::aes(x = .data$PC1,
                                      y = .data$PC2,
-                                     colour = .data$batch),
-                                     # shape = .data$NormType),
+                                     colour = .data$batch,
+                                     shape = .data$sample_type),
                         size = 3) +
-    # ggplot2::scale_color_manual(values = batch_colors) +
-    # ggplot2::scale_shape_manual(values = sample_types) +
+    ggplot2::scale_color_manual(values = batch_colors) +
+    ggplot2::scale_shape_manual(values = sample_types) +
     ggplot2::labs(title = "Scores plot",
                   caption = "Note: log transform / uv scaling / lipid species present in all pooled samples",
                   x = sprintf("PC 1 (%0.1f %%)", model@R2[1] * 100),

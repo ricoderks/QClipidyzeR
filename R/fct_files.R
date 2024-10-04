@@ -83,7 +83,12 @@ clean_data <- function(data = NULL,
                                                                 ignore.case = TRUE) |
                                                             grepl(x = .data[[sample_type]],
                                                                   pattern = sample_regex,
-                                                                  ignore.case = TRUE))))
+                                                                  ignore.case = TRUE)) |>
+                                            dplyr::mutate(sample_type = dplyr::if_else(grepl(x = .data[[sample_type]],
+                                                                                             pattern = qc_regex,
+                                                                                             ignore.case = TRUE),
+                                                                                       "qc",
+                                                                                       "sample"))))
 
   # which features
   for(a in 1:6) {
