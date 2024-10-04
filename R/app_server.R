@@ -36,8 +36,23 @@ app_server <- function(input, output, session) {
   mod_data_server(id = "data",
                   r = r)
 
-  # show the plots
-  mod_results_server(id = "results",
+  # show the results
+  mod_results_server(id = "sheet1",
+                     r = r)
+
+  mod_results_server(id = "sheet2",
+                     r = r)
+
+  mod_results_server(id = "sheet3",
+                     r = r)
+
+  mod_results_server(id = "sheet4",
+                     r = r)
+
+  mod_results_server(id = "sheet5",
+                     r = r)
+
+  mod_results_server(id = "sheet6",
                      r = r)
 
   # help module

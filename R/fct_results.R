@@ -56,7 +56,8 @@ calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
 #'
 #' @author Rico Derks
 #'
-#' @importFrom ggplot2 ggplot aes geom_histogram geom_vline labs theme_minimal guides guide_legend .data
+#' @importFrom ggplot2 ggplot aes geom_histogram geom_vline labs theme_minimal
+#'     guides guide_legend .data theme
 #' @importFrom plotly ggplotly
 #' @importFrom dplyr mutate
 #'
@@ -74,8 +75,10 @@ create_rsd_hist <- function(data = NULL) {
                         linetype = 2) +
     ggplot2::labs(x = "RSD [%]") +
     # this one doesn't convert well to plotly
-    # ggplot2::guides(fill = ggplot2::guide_legend(title = "Lipid class")) +
-    ggplot2::theme_minimal()
+    ggplot2::guides(fill = ggplot2::guide_legend(title = "Lipid class",
+                                                 nrow = 2)) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "bottom")
 
   # ply <- plotly::ggplotly(p)
 

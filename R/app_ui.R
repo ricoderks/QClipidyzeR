@@ -34,9 +34,32 @@ app_ui <- function(request) {
         title = "Data",
         mod_data_ui(id = "data")
       ),
-      bslib::nav_panel(
+      bslib::nav_menu(
         title = "Results",
-        mod_results_ui(id = "results")
+        bslib::nav_panel(
+          title = "Species conc.",
+          mod_results_ui(id = "sheet1")
+        ),
+        bslib::nav_panel(
+          title = "Species comp.",
+          mod_results_ui(id = "sheet2")
+        ),
+        bslib::nav_panel(
+          title = "Class conc.",
+          mod_results_ui(id = "sheet3")
+        ),
+        bslib::nav_panel(
+          title = "Conc comp.",
+          mod_results_ui(id = "sheet4")
+        ),
+        bslib::nav_panel(
+          title = "FA conc.",
+          mod_results_ui(id = "sheet5")
+        ),
+        bslib::nav_panel(
+          title = "FA comp.",
+          mod_results_ui(id = "sheet6")
+        )
       ),
       bslib::nav_spacer(),
       bslib::nav_menu(

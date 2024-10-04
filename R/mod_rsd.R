@@ -13,7 +13,10 @@ mod_rsd_ui <- function(id){
   ns <- shiny::NS(id)
 
   shiny::tagList(
-    shiny::uiOutput(outputId = ns("show_rsd"))
+    shiny::uiOutput(outputId = ns("show_title")),
+    bslib::card(
+      shiny::uiOutput(outputId = ns("show_rsd"))
+    )
   )
 }
 
@@ -24,6 +27,21 @@ mod_rsd_server <- function(id, r, sheet){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    output$show_title <- shiny::renderUI({
+      title <- switch(
+        sheet,
+        "Species concentration",
+        "Species composition",
+        "Class concentration",
+        "Class composition",
+        "FA concentration",
+        "FA composition"
+      )
+
+      shiny::h5(title)
+    })
+
+
     output$show_rsd <- shiny::renderUI({
       shiny::req(r$rsd_data)
 
@@ -31,7 +49,8 @@ mod_rsd_server <- function(id, r, sheet){
         shiny::tagList(
           # plotly is not working??
           # plotly::plotlyOutput(outputId = ns("rsd_plot"))
-          shiny::plotOutput(outputId = ns("rsd_plot"))
+          shiny::plotOutput(outputId = ns("rsd_plot"),
+                            height = "100%")
         )
       } else {
         shiny::tagList(

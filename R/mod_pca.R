@@ -10,35 +10,42 @@
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom shinyWidgets prettyCheckboxGroup
-#' @import bs4Dash
 #' @import plotly
 #'
 mod_pca_ui <- function(id) {
   ns <- shiny::NS(id)
 
   shiny::tagList(
-      # shiny::uiOutput(outputId = ns("ui_scores")),
-    shinyWidgets::prettyCheckboxGroup(
-      inputId = ns("batch"),
-      label = "Batch:",
-      icon = shiny::icon("check"),
-      choiceNames = c("1", "2"),
-      choiceValues = c("1", "2"),
-      selected = c("1", "2"),
-      inline = TRUE
-    ),
-    shinyWidgets::prettyCheckboxGroup(
-      inputId = ns("sample_type"),
-      label = "Sample type:",
-      icon = shiny::icon("check"),
-      choiceNames = c("Pooled sample (●)", "Samples(▲)"),
-      choiceValues = c("Pooled sample", "Samples"),
-      selected = c("Pooled sample", "Samples"),
-      inline = TRUE
-    ),
-      plotly::plotlyOutput(outputId = ns("scores")),
-      plotly::plotlyOutput(outputId = ns("loadings"))
+    shiny::uiOutput(outputId = ns("show_title")),
+    bslib::layout_column_wrap(
+      width = NULL,
+      style = css(grid_template_columns = "1fr 3fr"),
+      bslib::card(
+        shinyWidgets::prettyCheckboxGroup(
+          inputId = ns("batch"),
+          label = "Batch:",
+          icon = shiny::icon("check"),
+          choiceNames = c("1", "2"),
+          choiceValues = c("1", "2"),
+          selected = c("1", "2"),
+          inline = TRUE
+        ),
+        shinyWidgets::prettyCheckboxGroup(
+          inputId = ns("sample_type"),
+          label = "Sample type:",
+          icon = shiny::icon("check"),
+          choiceNames = c("Pooled sample (●)", "Samples(▲)"),
+          choiceValues = c("Pooled sample", "Samples"),
+          selected = c("Pooled sample", "Samples"),
+          inline = TRUE
+        )
+      ),
+      bslib::card(
+        plotly::plotlyOutput(outputId = ns("scores")),
+        plotly::plotlyOutput(outputId = ns("loadings"))
+      )
     )
+  )
 }
 
 #' pca Server Functions
@@ -64,17 +71,24 @@ mod_pca_server <- function(id, r, sheet){
         prettyOptions = list(
           icons = shiny::icon("check")
         )
-        # shinyWidgets::updatePrettyCheckboxGroup(
-        #   inputId = "batch",
-        #   choiceNames = as.character(batches),
-        #   choiceValues = batches,
-        #   selected = as.character(batches),
-        #   inline = TRUE,
-        #   prettyOptions = list(
-        #     icons = shiny::icon("check")
-        #   )
       )
     })
+
+
+    output$show_title <- shiny::renderUI({
+      title <- switch(
+        sheet,
+        "Species concentration",
+        "Species composition",
+        "Class concentration",
+        "Class composition",
+        "FA concentration",
+        "FA composition"
+      )
+
+      shiny::h5(title)
+    })
+
 
     # output$ui_scores <- shiny::renderUI({
     #   req(r$clean_data,

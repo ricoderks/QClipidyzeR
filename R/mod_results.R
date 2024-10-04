@@ -11,69 +11,20 @@
 #'
 mod_results_ui <- function(id){
   ns <- shiny::NS(id)
+
   shiny::tagList(
     bslib::navset_card_tab(
       bslib::nav_panel(
-        title = "Species conc.",
+        title = "RSD histogram",
         bslib::card(
-          bslib::layout_column_wrap(
-            mod_rsd_ui(id = ns("rsd_sheet1")),
-            mod_pca_ui(id = ns("pca_sheet1"))
-          )
+          mod_rsd_ui(id = ns(paste0("rsd_", id))),
         )
       ),
       bslib::nav_panel(
-        title = "Species comp.",
+        title = "PCA",
         bslib::card(
           bslib::card_body(
-            bslib::layout_column_wrap(
-              mod_rsd_ui(id = ns("rsd_sheet2")),
-              mod_pca_ui(id = ns("pca_sheet2"))
-            )
-          )
-        )
-      ),
-      bslib::nav_panel(
-        title = "Classes conc.",
-        bslib::card(
-          bslib::card_body(
-            bslib::layout_column_wrap(
-              mod_rsd_ui(id = ns("rsd_sheet3")),
-              mod_pca_ui(id = ns("pca_sheet3"))
-            )
-          )
-        )
-      ),
-      bslib::nav_panel(
-        title = "Classes comp.",
-        bslib::card(
-          bslib::card_body(
-            bslib::layout_column_wrap(
-              mod_rsd_ui(id = ns("rsd_sheet4")),
-              mod_pca_ui(id = ns("pca_sheet4"))
-            )
-          )
-        )
-      ),
-      bslib::nav_panel(
-        title = "FA conc.",
-        bslib::card(
-          bslib::card_body(
-            bslib::layout_column_wrap(
-              mod_rsd_ui(id = ns("rsd_sheet5")),
-              mod_pca_ui(id = ns("pca_sheet5"))
-            )
-          )
-        )
-      ),
-      bslib::nav_panel(
-        title = "fA comp.",
-        bslib::card(
-          bslib::card_body(
-            bslib::layout_column_wrap(
-              mod_rsd_ui(id = ns("rsd_sheet6")),
-              mod_pca_ui(id = ns("pca_sheet6"))
-            )
+            mod_pca_ui(id = ns(paste0("pca_", id)))
           )
         )
       )
