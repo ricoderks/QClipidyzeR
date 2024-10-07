@@ -37,7 +37,7 @@ read_files <- function(files = NULL, sheet_names = NULL) {
     )
 
     all_data <- all_data |>
-      dplyr::mutate(data = purrr::map(.x = data,
+      dplyr::mutate(data = purrr::map(.x = .data$data,
                                       .f = ~ .x |>
                                         purrr::reduce(function(...) merge(...), all = TRUE) |>
                                         # sort and convert to batch number

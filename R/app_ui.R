@@ -13,8 +13,6 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
 
-    shinyjs::useShinyjs(),
-
     # Your application UI logic
     bslib::page_navbar(
       title = paste0("QClipidyzeR | v", packageVersion(pkg = "QClipidyzeR")),

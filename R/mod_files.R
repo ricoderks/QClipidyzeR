@@ -16,6 +16,7 @@ mod_files_ui <- function(id){
 
   shiny::tagList(
     waiter::useHostess(),
+    shinyjs::useShinyjs(),
 
     bslib::card(
       bslib::layout_sidebar(
@@ -182,7 +183,7 @@ mod_files_server <- function(id, r){
 
         progress <- 40
         for(a in 1:6) {
-          # calculate the RSD stuff
+          # calculate everything
           r$rsd_data[[a]] <- calc_rsd(data = r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
                                                                      pattern = input$qc_regex), ],
                                       meta_data = r$meta_columns,
@@ -195,6 +196,9 @@ mod_files_server <- function(id, r){
 
           progress <- progress + 5
           import_hostess$set(progress)
+
+          r$trend_data[[a]] <- calc_trend(data = r$clean_data[[a]],
+                                          meta_data = r$meta_columns)
         }
         print("done")
       },
@@ -205,6 +209,7 @@ mod_files_server <- function(id, r){
         r$clean_data <- NULL
         r$rsd_data <- vector("list", 6)
         r$pca_model <- vector("list", 6)
+        r$trend_data <- vector("list", 6)
         # pass the error on
         r$errors <- e
       })

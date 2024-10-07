@@ -27,6 +27,24 @@ mod_results_ui <- function(id){
         )
       ),
       bslib::nav_panel(
+        title = "Trend plot",
+        bslib::card(
+          bslib::card_body(
+            # shiny::p("trend stuff")
+            mod_trend_ui(id = ns(paste0("trend_", id)))
+          )
+        )
+      ),
+      bslib::nav_panel(
+        title = "Deviation",
+        bslib::card(
+          bslib::card_body(
+            shiny::p("deviation stuff")
+            # mod_deviation_ui(id = ns(paste0("deviation_", id)))
+          )
+        )
+      ),
+      bslib::nav_panel(
         title = "PCA",
         bslib::card(
           bslib::card_body(
@@ -70,6 +88,58 @@ mod_results_server <- function(id, r){
                    r = r,
                    sheet = 6)
     #####################
+
+    ##### Trend stuff ####
+    mod_trend_server(id = "trend_sheet1",
+                   r = r,
+                   sheet = 1)
+
+    mod_trend_server(id = "trend_sheet2",
+                   r = r,
+                   sheet = 2)
+
+    mod_trend_server(id = "trend_sheet3",
+                   r = r,
+                   sheet = 3)
+
+    mod_trend_server(id = "trend_sheet4",
+                   r = r,
+                   sheet = 4)
+
+    mod_trend_server(id = "trend_sheet5",
+                   r = r,
+                   sheet = 5)
+
+    mod_trend_server(id = "trend_sheet6",
+                   r = r,
+                   sheet = 6)
+    ######################
+
+    ##### Deviation stuff ####
+    mod_deviation_server(id = "deviation_sheet1",
+                   r = r,
+                   sheet = 1)
+
+    mod_deviation_server(id = "deviation_sheet2",
+                   r = r,
+                   sheet = 2)
+
+    mod_deviation_server(id = "deviation_sheet3",
+                   r = r,
+                   sheet = 3)
+
+    mod_deviation_server(id = "deviation_sheet4",
+                   r = r,
+                   sheet = 4)
+
+    mod_deviation_server(id = "deviation_sheet5",
+                   r = r,
+                   sheet = 5)
+
+    mod_deviation_server(id = "deviation_sheet6",
+                   r = r,
+                   sheet = 6)
+    #########################
 
     ##### PCA stuff #####
     mod_pca_server(id = "pca_sheet1",

@@ -28,6 +28,8 @@ golem::add_module(name = "results", with_test = FALSE) # Name of the module
 golem::add_module(name = "pca", with_test = FALSE) # Name of the module
 golem::add_module(name = "rsd", with_test = FALSE) # Name of the module
 golem::add_module(name = "tables", with_test = FALSE) # Name of the module
+golem::add_module(name = "trend", with_test = FALSE) # trend plot stuff
+golem::add_module(name = "deviation", with_test = FALSE) # deviation stuff
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*

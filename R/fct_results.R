@@ -223,7 +223,7 @@ scores_plot <- function(model = NULL,
                   x = sprintf("PC 1 (%0.1f %%)", model@R2[1] * 100),
                   y = sprintf("PC 2 (%0.1f %%)", model@R2[2] * 100)) +
     ggplot2::theme_minimal()
-    # ggplot2::theme(legend.position = "none")
+  # ggplot2::theme(legend.position = "none")
 
   ply <- plotly::ggplotly(p)
 
@@ -378,3 +378,112 @@ create_cb_css <- function() {
   return(CSS)
 }
 
+
+#' @title Do the calculations for a trend plot
+#'
+#' @description Do the calculations for a trend plot
+#'
+#' @param data data.frame, with all data.
+#' @param meta_data character() vector with column names of the meta data.
+#'
+#' @returns data.frame in long format with log2fc column
+#'
+#' @importFrom tidyr pivot_longer
+#' @importFrom dplyr filter mutate select left_join group_by ungroup
+#'
+#' @author Rico Derks
+#'
+calc_trend <- function(data = NULL,
+                       meta_data = NULL) {
+  trend_data <- data |>
+    tidyr::pivot_longer(
+      cols = !meta_data,
+      names_to = "lipid",
+      values_to = "value"
+    ) |>
+    dplyr::filter(.data$sample_type == "qc")
+
+  # ref data overall
+  ref_data <- trend_data |>
+    dplyr::filter(.data$sample_type == "qc",
+                  .data$batch == 1) |>
+    dplyr::filter(.data$read_order == min(.data$read_order)) |>
+    dplyr::select(.data$lipid, .data$value) |>
+    dplyr::rename(ref_value = .data$value)
+
+  # ref data per batch
+  ref_batch_data <- trend_data |>
+    dplyr::filter(.data$sample_type == "qc") |>
+    dplyr::group_by(.data$batch) |>
+    dplyr::filter(.data$read_order == min(.data$read_order)) |>
+    dplyr::ungroup() |>
+    dplyr::select(.data$batch, .data$lipid, .data$value) |>
+    dplyr::rename(ref_batch_value = .data$value)
+
+  trend_data <- trend_data |>
+    dplyr::left_join(
+      y = ref_data,
+      by = "lipid"
+    ) |>
+    dplyr::left_join(
+      y = ref_batch_data,
+      by = c("lipid" = "lipid",
+             "batch" = "batch")
+    ) |>
+    dplyr::mutate(log2fc = log2(.data$value / .data$ref_value),
+                  log2fc_batch = log2(.data$value / .data$ref_batch_value),
+                  Sample_name = paste0(.data$Sample_name, " - ", .data$batch))
+
+  # sort the samples in correct order
+  trend_data$Sample_name <- factor(
+    x = trend_data$Sample_name,
+    levels = unique(trend_data$Sample_name[order(trend_data$batch, trend_data$read_order)]),
+    labels = unique(trend_data$Sample_name[order(trend_data$batch, trend_data$read_order)])
+  )
+
+  # print(unique(trend_data$Sample_name[order(trend_data$batch, trend_data$read_order)]))
+
+  return(trend_data)
+}
+
+
+#' @title Do the calculations for a trend plot
+#'
+#' @description Do the calculations for a trend plot
+#'
+#' @param data data.frame, with all data.
+#' @param trend character(1) show the overall trend or per batch.
+#'
+#' @returns ggplot2 object
+#'
+#' @importFrom ggplot2 ggplot aes geom_hline geom_line theme_minimal .data labs
+#'     geom_point
+#'
+#' @author Rico Derks
+#'
+trend_plot <- function(data = NULL,
+                       trend = c("overall", "batch")) {
+
+  data$yaxis <- switch(
+    trend,
+    "overall" = data$log2fc,
+    "batch" = data$log2fc_batch
+  )
+
+  p <- data |>
+    ggplot2::ggplot(ggplot2::aes(x = .data$Sample_name,
+                                 y = .data$yaxis,
+                                 group = .data$lipid,
+                                 color = .data$batch)) +
+    ggplot2::geom_line(alpha = 0.5) +
+    ggplot2::geom_point(size = 2,
+                        alpha = 0.5) +
+    ggplot2::geom_hline(yintercept = c(-0.5, 0.5),
+                        linetype = 2,
+                        color = "red") +
+    ggplot2::labs(x = "Sample name",
+                  y = "Log2(fold change)") +
+    ggplot2::theme_minimal()
+
+  return(p)
+}
