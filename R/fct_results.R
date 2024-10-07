@@ -441,8 +441,6 @@ calc_trend <- function(data = NULL,
     labels = unique(trend_data$Sample_name[order(trend_data$batch, trend_data$read_order)])
   )
 
-  # print(unique(trend_data$Sample_name[order(trend_data$batch, trend_data$read_order)]))
-
   return(trend_data)
 }
 
