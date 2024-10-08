@@ -188,17 +188,26 @@ mod_files_server <- function(id, r){
                                                                      pattern = input$qc_regex), ],
                                       meta_data = r$meta_columns,
                                       lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
-          progress <- progress + 5
+          progress <- progress + 2.5
           import_hostess$set(progress)
 
           r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
                                      meta_data = r$meta_columns)
 
-          progress <- progress + 5
+          progress <- progress + 2.5
           import_hostess$set(progress)
 
           r$trend_data[[a]] <- calc_trend(data = r$clean_data[[a]],
                                           meta_data = r$meta_columns)
+
+          progress <- progress + 2.5
+          import_hostess$set(progress)
+
+          r$deviation_data[[a]] <- calc_deviation(data = r$clean_data[[a]],
+                                                  meta_data = r$meta_columns)
+
+          progress <- progress + 2.5
+          import_hostess$set(progress)
         }
         print("done")
       },
@@ -253,7 +262,8 @@ mod_files_server <- function(id, r){
                             # after changing something make possible to re-import
                             # the data
                             shinyjs::enable(id = "import_data")
-    })
+    },
+    ignoreInit = TRUE)
 
 
     # just for some debugging
