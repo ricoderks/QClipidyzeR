@@ -445,9 +445,9 @@ calc_trend <- function(data = NULL,
 }
 
 
-#' @title Do the calculations for a trend plot
+#' @title Create the trend plot
 #'
-#' @description Do the calculations for a trend plot
+#' @description Create the trend plot, overall or per batch.
 #'
 #' @param data data.frame, with all data.
 #' @param trend character(1) show the overall trend or per batch.
@@ -455,7 +455,7 @@ calc_trend <- function(data = NULL,
 #' @returns ggplot2 object
 #'
 #' @importFrom ggplot2 ggplot aes geom_hline geom_line theme_minimal .data labs
-#'     geom_point theme element_text facet_wrap vars
+#'     geom_point theme element_text facet_wrap vars labeller
 #'
 #' @author Rico Derks
 #'
@@ -483,15 +483,97 @@ trend_plot <- function(data = NULL,
                   y = "Log2(fold change)")
 
   if(trend == "batch") {
+    strip_labels <- function(value) {
+      return(paste0("Batch ", value))
+    }
+
     p <- p +
       ggplot2::facet_wrap(~ .data$batch,
-                          scales = "free")
+                          scales = "free",
+                          labeller = ggplot2::labeller(batch = strip_labels))
   }
 
   p <- p +
     ggplot2::theme_minimal() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 60,
                                                        hjust = 1))
+
+  return(p)
+}
+
+
+#' @title Calculate the deviation from the mean
+#'
+#' @description Calculate the deviation from the mean for each QC sample overall
+#'    and per batch.
+#'
+#' @param data data.frame, with all data.
+#' @param meta_data character() vector with column names of the meta data.
+#'
+#' @returns data.frame in long format
+#'
+#' @importFrom tidyr pivot_longer
+#' @importFrom dplyr filter mutate select left_join group_by ungroup
+#'
+#' @author Rico Derks
+#'
+calc_deviation <- function(data = NULL,
+                           meta_data = NULL) {
+  dev_data <- data |>
+    tidyr::pivot_longer(
+      cols = !meta_data,
+      names_to = "lipid",
+      values_to = "value"
+    ) |>
+    dplyr::filter(.data$sample_type == "qc")
+
+  dev_data <- dev_data |>
+    dplyr::group_by(.data$batch, .data$lipid) |>
+    dplyr::mutate(mean_value = mean(.data$value, na.rm = TRUE)) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(diff_mean = (.data$value - .data$mean_value) / .data$mean_value)
+
+  return(dev_data)
+}
+
+
+#' @title Create a deviation from the mean plot
+#'
+#' @description Create a deviation from the mean histogram, overall or per batch.
+#'
+#' @param data data.frame, with all data.
+#' @param trend character(1) show the overall trend or per batch.
+#'
+#' @returns ggplot2 object
+#'
+#' @importFrom ggplot2 ggplot aes geom_vline geom_histogram theme_minimal .data
+#'     labs labeller
+#'
+#' @author Rico Derks
+#'
+deviation_plot <- function(data = NULL,
+                           trend = c("overall", "batch")) {
+  p <- data |>
+    ggplot2::ggplot(ggplot2::aes(x = .data$diff_mean)) +
+    ggplot2::geom_histogram(binwidth = 0.05) +
+    ggplot2::geom_vline(xintercept = c(-0.25, 0.25),
+                        linetype = 2,
+                        color = "red") +
+    ggplot2::labs(x = "Difference from the mean [proportion]")
+
+  if(trend == "batch") {
+     strip_labels <- function(value) {
+      return(paste0("Batch ", value))
+    }
+
+    p <- p +
+      ggplot2::facet_wrap(~ .data$batch,
+                          scales = "free_y",
+                          labeller = ggplot2::labeller(batch = strip_labels))
+  }
+
+  p <- p +
+    ggplot2::theme_minimal()
 
   return(p)
 }

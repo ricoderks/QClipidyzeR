@@ -30,7 +30,6 @@ mod_results_ui <- function(id){
         title = "Trend plot",
         bslib::card(
           bslib::card_body(
-            # shiny::p("trend stuff")
             mod_trend_ui(id = ns(paste0("trend_", id)))
           )
         )
@@ -39,8 +38,7 @@ mod_results_ui <- function(id){
         title = "Deviation",
         bslib::card(
           bslib::card_body(
-            shiny::p("deviation stuff")
-            # mod_deviation_ui(id = ns(paste0("deviation_", id)))
+            mod_deviation_ui(id = ns(paste0("deviation_", id)))
           )
         )
       ),
