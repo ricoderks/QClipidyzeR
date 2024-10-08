@@ -455,7 +455,7 @@ calc_trend <- function(data = NULL,
 #' @returns ggplot2 object
 #'
 #' @importFrom ggplot2 ggplot aes geom_hline geom_line theme_minimal .data labs
-#'     geom_point
+#'     geom_point theme element_text facet_wrap vars
 #'
 #' @author Rico Derks
 #'
@@ -480,8 +480,18 @@ trend_plot <- function(data = NULL,
                         linetype = 2,
                         color = "red") +
     ggplot2::labs(x = "Sample name",
-                  y = "Log2(fold change)") +
-    ggplot2::theme_minimal()
+                  y = "Log2(fold change)")
+
+  if(trend == "batch") {
+    p <- p +
+      ggplot2::facet_wrap(~ .data$batch,
+                          scales = "free")
+  }
+
+  p <- p +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 60,
+                                                       hjust = 1))
 
   return(p)
 }
