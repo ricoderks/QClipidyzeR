@@ -34,7 +34,7 @@ mod_pca_ui <- function(id) {
           inputId = ns("sample_type"),
           label = "Sample type:",
           icon = shiny::icon("check"),
-          choiceNames = c("QC samples (●)", "Samples (▲)"),
+          choiceNames = c("QC samples (\u25CF)", "Samples (\u25B2)"),
           choiceValues = c("qc", "sample"),
           selected = c("qc", "sample"),
           inline = TRUE
