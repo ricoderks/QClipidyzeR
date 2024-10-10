@@ -37,7 +37,7 @@ mod_pca_ui <- function(id) {
           choiceNames = c("QC samples (\u25CF)", "Samples (\u25B2)"),
           choiceValues = c("qc", "sample"),
           selected = c("qc", "sample"),
-          inline = TRUE
+          inline = FALSE
         )
       ),
       bslib::card(
