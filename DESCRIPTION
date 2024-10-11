@@ -1,6 +1,6 @@
 Package: QClipidyzeR
 Title: QC lipidyzer data
-Version: 0.9.9015
+Version: 0.9.9016
 Authors@R: 
     person("Rico", "Derks", , "r.j.e.derks@lumc.nl", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-8920-7133"))
@@ -22,13 +22,13 @@ Imports:
     rlang,
     sessioninfo,
     shiny (>= 1.7.3),
+    shinybusy,
     shinyjs,
     shinyWidgets,
     stats,
     stringr,
     tidyr,
-    utils,
-    waiter
+    utils
 Suggests: 
     testthat (>= 3.0.0)
 Remotes:

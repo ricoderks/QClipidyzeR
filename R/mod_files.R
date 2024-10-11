@@ -7,7 +7,6 @@
 #'
 #' @noRd
 #'
-#' @import waiter
 #' @importFrom stringr str_detect
 #' @importFrom shiny NS tagList
 #' @importFrom shinyjs disabled enable
@@ -15,9 +14,10 @@ mod_files_ui <- function(id){
   ns <- shiny::NS(id)
 
   shiny::tagList(
-    waiter::useHostess(),
     shinyjs::useShinyjs(),
 
+    # disable upload bar fileinput
+    tags$style(".shiny-file-input-progress {display: none}"),
     bslib::card(
       bslib::layout_sidebar(
         sidebar = bslib::sidebar(
@@ -62,21 +62,6 @@ mod_files_ui <- function(id){
             label = "Import data",
             width = "20%"
           )
-        ),
-
-        waiter::hostess_loader(
-          id = "loader_file",
-          preset = "circle",
-          text_color = "black",
-          class = "label-center",
-          center_page = TRUE
-        ),
-        waiter::hostess_loader(
-          id = "loader_import",
-          preset = "circle",
-          text_color = "black",
-          class = "label-center",
-          center_page = TRUE
         )
       )
     )
@@ -86,7 +71,7 @@ mod_files_ui <- function(id){
 #' files Server Functions
 #'
 #' @importFrom stringr str_extract str_detect
-#' @importFrom waiter Waitress
+#' @importFrom shinybusy show_modal_spinner remove_modal_spinner
 #'
 #' @noRd
 mod_files_server <- function(id, r){
@@ -100,8 +85,7 @@ mod_files_server <- function(id, r){
       r$errors <- NULL
 
       tryCatch({
-        file_hostess <- waiter::Hostess$new(id = "loader_file")
-
+        shinybusy::show_modal_spinner(text = "Uploading / reading files...")
         my_files <- input$import_files
         batch_regex <- input$batch_regex
 
@@ -116,13 +100,9 @@ mod_files_server <- function(id, r){
           r$files <- my_files[order(batches), ]
         }
 
-        file_hostess$set(80)
-
         # read all the files
         r$all_data <- read_files(files = r$files,
                                  sheet_names = r$sheet_names)
-
-        file_hostess$set(90)
 
         r$meta_columns <-
           colnames(r$all_data$data[[1]])[!stringr::str_detect(string = colnames(r$all_data$data[[1]]),
@@ -139,14 +119,10 @@ mod_files_server <- function(id, r){
           selected = r$meta_columns[1]
         )
 
-        file_hostess$set(100)
-        file_hostess$close()
-
+        shinybusy::remove_modal_spinner()
         shinyjs::enable(id = "import_data")
       },
       error = function(e) {
-        # close the hostess
-        file_hostess$close()
         # empty some old data
         r$all_data <- NULL
         r$meta_columns <- NULL
@@ -164,10 +140,9 @@ mod_files_server <- function(id, r){
 
       tryCatch({
         shinyjs::disable(id = "import_data")
-        print("Start data import")
+        shinybusy::show_modal_spinner(text = "Processing data....")
 
-        import_hostess <- waiter::Hostess$new(id = "loader_import")
-        import_hostess$set(10)
+        print("Start data import")
         # clean the data, every column is kept (for now)
         # only keep pooled samples and samples
         # remove features which are NOT present in all pooled samples
@@ -179,41 +154,26 @@ mod_files_server <- function(id, r){
         # an extra meta column was added by clean_data(), add here
         r$meta_columns <- c(r$meta_columns, "sample_type")
 
-        import_hostess$set(40)
-
-        progress <- 40
         for(a in 1:6) {
           # calculate everything
           r$rsd_data[[a]] <- calc_rsd(data = r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
                                                                      pattern = input$qc_regex), ],
                                       meta_data = r$meta_columns,
                                       lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
-          progress <- progress + 2.5
-          import_hostess$set(progress)
 
           r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
                                      meta_data = r$meta_columns)
 
-          progress <- progress + 2.5
-          import_hostess$set(progress)
-
           r$trend_data[[a]] <- calc_trend(data = r$clean_data[[a]],
                                           meta_data = r$meta_columns)
 
-          progress <- progress + 2.5
-          import_hostess$set(progress)
-
           r$deviation_data[[a]] <- calc_deviation(data = r$clean_data[[a]],
                                                   meta_data = r$meta_columns)
-
-          progress <- progress + 2.5
-          import_hostess$set(progress)
         }
         print("done")
+        shinybusy::remove_modal_spinner()
       },
       error = function(e) {
-        # close the hostess
-        import_hostess$close()
         # empty some old data
         r$clean_data <- NULL
         r$rsd_data <- vector("list", 6)
@@ -262,8 +222,8 @@ mod_files_server <- function(id, r){
                             # after changing something make possible to re-import
                             # the data
                             shinyjs::enable(id = "import_data")
-    },
-    ignoreInit = TRUE)
+                          },
+                        ignoreInit = TRUE)
 
 
     # just for some debugging
