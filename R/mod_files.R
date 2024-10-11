@@ -71,7 +71,8 @@ mod_files_ui <- function(id){
 #' files Server Functions
 #'
 #' @importFrom stringr str_extract str_detect
-#' @importFrom shinybusy show_modal_spinner remove_modal_spinner
+#' @importFrom shinybusy show_modal_spinner remove_modal_spinner show_modal_progress_line
+#'     update_modal_progress remove_modal_progress
 #'
 #' @noRd
 mod_files_server <- function(id, r){
@@ -140,7 +141,9 @@ mod_files_server <- function(id, r){
 
       tryCatch({
         shinyjs::disable(id = "import_data")
-        shinybusy::show_modal_spinner(text = "Processing data....")
+        # shinybusy::show_modal_spinner(text = "Processing data....")
+        shinybusy::show_modal_progress_line(value = 0,
+                                            text = "Processing data....")
 
         print("Start data import")
         # clean the data, every column is kept (for now)
@@ -154,6 +157,8 @@ mod_files_server <- function(id, r){
         # an extra meta column was added by clean_data(), add here
         r$meta_columns <- c(r$meta_columns, "sample_type")
 
+        shinybusy::update_modal_progress(value = 0.4)
+        progress <- 0.4
         for(a in 1:6) {
           # calculate everything
           r$rsd_data[[a]] <- calc_rsd(data = r$clean_data[[a]][grepl(x = r$clean_data[[a]][, input$sampletype_col],
@@ -161,17 +166,30 @@ mod_files_server <- function(id, r){
                                       meta_data = r$meta_columns,
                                       lipid_class = ifelse(a == 3 | a == 4, FALSE, TRUE))
 
+          progress <- progress + 0.025
+          shinybusy::update_modal_progress(value = progress)
+
           r$pca_model[[a]] <- do_pca(data = r$clean_data[[a]],
                                      meta_data = r$meta_columns)
+
+          progress <- progress + 0.025
+          shinybusy::update_modal_progress(value = progress)
 
           r$trend_data[[a]] <- calc_trend(data = r$clean_data[[a]],
                                           meta_data = r$meta_columns)
 
+          progress <- progress + 0.025
+          shinybusy::update_modal_progress(value = progress)
+
           r$deviation_data[[a]] <- calc_deviation(data = r$clean_data[[a]],
                                                   meta_data = r$meta_columns)
+
+          progress <- progress + 0.025
+          shinybusy::update_modal_progress(value = progress)
         }
         print("done")
-        shinybusy::remove_modal_spinner()
+        shinybusy::remove_modal_progress()
+        # shinybusy::remove_modal_spinner()
       },
       error = function(e) {
         # empty some old data
