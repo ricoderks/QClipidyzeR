@@ -14,7 +14,14 @@ mod_rsd_ui <- function(id){
 
   shiny::tagList(
     shiny::uiOutput(outputId = ns("show_title")),
-    bslib::card(
+    bslib::layout_sidebar(
+      sidebar = bslib::sidebar(
+        shiny::selectInput(inputId = ns("select_histogram"),
+                           label = "Show histogram:",
+                           choices = c("Overall" = "overall",
+                                       "Per batch" = "batch"),
+                           selected = "overall")
+      ),
       shiny::uiOutput(outputId = ns("show_rsd"))
     )
   )
@@ -61,11 +68,13 @@ mod_rsd_server <- function(id, r, sheet){
 
 
     output$rsd_plot <- shiny::renderPlot({#plotly::renderPlotly({
-      shiny::req(r$rsd_data)
+      shiny::req(r$rsd_data,
+                 input$select_histogram)
 
       if(!is.null(r$rsd_data[[sheet]])) {
-          p <- create_rsd_hist(data = r$rsd_data[[sheet]])
-          p
+        p <- create_rsd_hist(data = r$rsd_data[[sheet]],
+                             batch = input$select_histogram)
+        p
       }
     })
 
@@ -74,8 +83,8 @@ mod_rsd_server <- function(id, r, sheet){
       shiny::req(r$rsd_data)
 
       if(!is.null(r$rsd_data[[sheet]])) {
-          table_DT <- create_rsd_table(data = r$rsd_data[[sheet]])
-          table_DT
+        table_DT <- create_rsd_table(data = r$rsd_data[[sheet]])
+        table_DT
       }
     })
 

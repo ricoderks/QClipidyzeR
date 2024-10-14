@@ -30,7 +30,20 @@ calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
     dplyr::group_by(.data$lipid) |>
     dplyr::summarise(mean = mean(.data$value, na.rm = TRUE),
                      stdev = stats::sd(.data$value, na.rm = TRUE),
-                     rsd = .data$stdev / .data$mean)
+                     rsd = .data$stdev / .data$mean,
+                     .groups = "drop")
+
+  rsd_data_batch <- data |>
+    tidyr::pivot_longer(
+      cols = !meta_data,
+      names_to = "lipid",
+      values_to = "value"
+    ) |>
+    dplyr::group_by(.data$batch, .data$lipid) |>
+    dplyr::summarise(mean = mean(.data$value, na.rm = TRUE),
+                     stdev = stats::sd(.data$value, na.rm = TRUE),
+                     rsd = .data$stdev / .data$mean,
+                     .groups = "drop")
 
   # extract lipid class information for lipid species
   if(lipid_class) {
@@ -41,30 +54,41 @@ calc_rsd <- function(data = NULL, meta_data = NULL, lipid_class = FALSE) {
                                                  stringr::str_extract(string = .data$lipid,
                                                                       pattern = "^[a-zA-Z]* d18:[01]"),
                                                  .data$lipid_class))
+
+    rsd_data_batch <- rsd_data_batch |>
+      dplyr::mutate(lipid_class = stringr::str_extract(string = .data$lipid,
+                                                       pattern = "^[a-zA-Z]* O?"),
+                    lipid_class = dplyr::if_else(lipid_class == "Cer ",
+                                                 stringr::str_extract(string = .data$lipid,
+                                                                      pattern = "^[a-zA-Z]* d18:[01]"),
+                                                 .data$lipid_class))
   }
 
-  return(rsd_data)
+  return(list("overall" = rsd_data,
+              "batch" = rsd_data_batch))
 }
 
 #' @title Create histogram of RSD values
 #'
 #' @description Create plotly histogram of RSD values.
 #'
-#' @param data data.frame, with all rsd values
+#' @param data data.frame, with all rsd values.
+#' @param batch character(1), show the histograms for all data or per batch.
 #'
 #' @return plotly object
 #'
 #' @author Rico Derks
 #'
 #' @importFrom ggplot2 ggplot aes geom_histogram geom_vline labs theme_minimal
-#'     guides guide_legend .data theme
+#'     guides guide_legend .data theme facet_wrap labeller
 #' @importFrom plotly ggplotly
 #' @importFrom dplyr mutate
 #'
 #' @noRd
 #'
-create_rsd_hist <- function(data = NULL) {
-  p <- data |>
+create_rsd_hist <- function(data = NULL,
+                            batch = c("overall", "batch")) {
+  p <- data[[batch]] |>
     dplyr::mutate(rsd = .data$rsd * 100) |>
     ggplot2::ggplot(ggplot2::aes(x = .data$rsd,
                                  fill = .data$lipid_class)) +
@@ -76,7 +100,20 @@ create_rsd_hist <- function(data = NULL) {
     ggplot2::labs(x = "RSD [%]") +
     # this one doesn't convert well to plotly
     ggplot2::guides(fill = ggplot2::guide_legend(title = "Lipid class",
-                                                 nrow = 2)) +
+                                                 nrow = 2))
+
+    if(batch == "batch") {
+      strip_labels <- function(value) {
+        return(paste0("Batch ", value))
+      }
+
+      p <- p +
+        ggplot2::facet_wrap(~ .data$batch,
+                            scales = "free_y",
+                            labeller = ggplot2::labeller(batch = strip_labels))
+    }
+
+  p <- p +
     ggplot2::theme_minimal() +
     ggplot2::theme(legend.position = "bottom")
 
@@ -562,7 +599,7 @@ deviation_plot <- function(data = NULL,
     ggplot2::labs(x = "Difference from the mean [proportion]")
 
   if(trend == "batch") {
-     strip_labels <- function(value) {
+    strip_labels <- function(value) {
       return(paste0("Batch ", value))
     }
 
