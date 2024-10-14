@@ -134,6 +134,7 @@ create_rsd_hist <- function(data = NULL,
 #' @author Rico Derks
 #'
 #' @importFrom DT datatable formatStyle styleInterval formatRound formatPercentage
+#'     JS
 #'
 #' @noRd
 #'
@@ -159,6 +160,12 @@ create_rsd_table <- function(data = NULL,
                     digits = 1) |>
     DT::formatPercentage(columns = "RSD",
                          digits = 1) |>
+    DT::formatStyle(
+      columns = 1:ncol(data[[batch]]),
+      target = "cell",
+      color = DT::JS("\"unset\""),
+      backgroundColor = DT::JS("\"unset\"")
+    ) |>
     DT::formatStyle(columns = "RSD",
                     target = "row", # not working, color is not working
                     fontWeight = DT::styleInterval(cuts = rsd_limit,
