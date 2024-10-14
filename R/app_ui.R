@@ -18,13 +18,6 @@ app_ui <- function(request) {
       title = paste0("QClipidyzeR | v", packageVersion(pkg = "QClipidyzeR")),
       underline = TRUE,
       bslib::nav_panel(
-        title = "Welcome",
-        bslib::card(
-          shiny::p("This app is intended to give a quick overview of the quality of a Lipidyzer study. E.g. it will show you the RSD values and a PCA analysis is to
-                  to see if there is any batch efftect in the data. For more information see the Help section.")
-        )
-      ),
-      bslib::nav_panel(
         title = "Files",
         mod_files_ui(id = "file")
       ),
