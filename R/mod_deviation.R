@@ -10,6 +10,7 @@
 mod_deviation_ui <- function(id) {
   ns <- shiny::NS(id)
   shiny::tagList(
+    shiny::uiOutput(outputId = ns("show_title")),
     bslib::layout_sidebar(
       sidebar = bslib::sidebar(
         shiny::selectInput(inputId = ns("select_deviation"),
@@ -29,6 +30,20 @@ mod_deviation_ui <- function(id) {
 mod_deviation_server <- function(id, r, sheet){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
+
+    output$show_title <- shiny::renderUI({
+      title <- switch(
+        sheet,
+        "Species concentration",
+        "Species composition",
+        "Class concentration",
+        "Class composition",
+        "FA concentration",
+        "FA composition"
+      )
+
+      shiny::h5(title)
+    })
 
     output$deviation_plot <- shiny::renderPlot({
       req(r$deviation_data,
