@@ -141,10 +141,17 @@ create_rsd_table <- function(data = NULL,
                              batch = c("overall", "batch")) {
   num_pages <- length(unique(data[[batch]]$lipid))
 
+  if(batch == "batch") {
+    col_names <- c("Batch", "Lipid class", "Mean", "St. dev.", "RSD")
+  } else {
+    col_names <- c("Lipid class", "Mean", "St. dev.", "RSD")
+  }
+
   dt_table <- DT::datatable(data[[batch]],
                             options = list(pageLength = num_pages,
-                                           dom = "trp"),
-                            rownames = FALSE) |>
+                                           dom = '<"top" p>tr'),
+                            rownames = FALSE,
+                            colnames = col_names) |>
     DT::formatRound(columns = c("mean", "stdev"),
                     digits = 1) |>
     DT::formatPercentage(columns = "rsd",
