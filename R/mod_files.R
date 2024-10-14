@@ -9,7 +9,7 @@
 #'
 #' @importFrom stringr str_detect
 #' @importFrom shiny NS tagList
-#' @importFrom shinyjs disabled enable
+#' @importFrom shinyjs disabled enable hidden show
 mod_files_ui <- function(id){
   ns <- shiny::NS(id)
 
@@ -56,7 +56,7 @@ mod_files_ui <- function(id){
         ),
         uiOutput(outputId = ns("files_imported")),
         textOutput(outputId = ns("debug")),
-        shinyjs::disabled(
+        shinyjs::hidden(
           shiny::actionButton(
             inputId = ns("import_data"),
             label = "Import data",
@@ -121,6 +121,7 @@ mod_files_server <- function(id, r){
         )
 
         shinybusy::remove_modal_spinner()
+        shinyjs::show(id = "import_data")
         shinyjs::enable(id = "import_data")
       },
       error = function(e) {
