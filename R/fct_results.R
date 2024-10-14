@@ -142,25 +142,29 @@ create_rsd_table <- function(data = NULL,
   num_pages <- length(unique(data[[batch]]$lipid))
 
   if(batch == "batch") {
-    col_names <- c("Batch", "Lipid class", "Mean", "St. dev.", "RSD")
+    col_names <- c("Batch" = "batch", "Lipid class" = "lipid", "Mean" = "mean", "St. dev." = "stdev", "RSD" = "rsd")
+    rsd_limit <- 0.2
   } else {
-    col_names <- c("Lipid class", "Mean", "St. dev.", "RSD")
+    col_names <- c("Lipid class" = "lipid", "Mean" = "mean", "St. dev." = "stdev", "RSD" = "rsd")
+    rsd_limit <- 0.3
   }
 
-  dt_table <- DT::datatable(data[[batch]],
-                            options = list(pageLength = num_pages,
-                                           dom = '<"top" p>tr'),
-                            rownames = FALSE,
-                            colnames = col_names) |>
-    DT::formatRound(columns = c("mean", "stdev"),
+  dt_table <- data[[batch]] |>
+    DT::datatable(options = list(pageLength = num_pages,
+                                 dom = '<"top" p>t',
+                                 ordering = FALSE),
+                  rownames = FALSE,
+                  colnames = col_names) |>
+    DT::formatRound(columns = c("Mean", "St. dev."),
                     digits = 1) |>
-    DT::formatPercentage(columns = "rsd",
+    DT::formatPercentage(columns = "RSD",
                          digits = 1) |>
-    DT::formatStyle(columns = "rsd",
-                    color = DT::styleInterval(cuts = 0.2,
-                                              values = c("black", "red")),
-                    fontWeight = DT::styleInterval(cuts = 0.2,
-                                                   values = c("normal", "bold")))
+    DT::formatStyle(columns = "RSD",
+                    target = "row", # not working, color is not working
+                    fontWeight = DT::styleInterval(cuts = rsd_limit,
+                                                   values = c("normal", "bold")),
+                    color = DT::styleInterval(cuts = rsd_limit,
+                                              values = c("black", "red")))
 
   return(dt_table)
 }

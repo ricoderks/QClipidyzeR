@@ -80,7 +80,8 @@ mod_rsd_server <- function(id, r, sheet){
 
 
     output$rsd_table <- DT::renderDT({
-      shiny::req(r$rsd_data)
+      shiny::req(r$rsd_data,
+                 input$select_histogram)
 
       if(!is.null(r$rsd_data[[sheet]])) {
         table_DT <- create_rsd_table(data = r$rsd_data[[sheet]],
