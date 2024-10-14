@@ -134,6 +134,7 @@ create_rsd_hist <- function(data = NULL,
 #' @author Rico Derks
 #'
 #' @importFrom DT datatable formatStyle styleInterval formatRound formatPercentage
+#'     JS
 #'
 #' @noRd
 #'
@@ -159,6 +160,15 @@ create_rsd_table <- function(data = NULL,
                     digits = 1) |>
     DT::formatPercentage(columns = "RSD",
                          digits = 1) |>
+    # Workaround to get the highlighting to work properly, see:
+    # https://github.com/rstudio/DT/issues/1102    and
+    # https://stackoverflow.com/questions/78140942/is-there-a-way-to-change-color-of-specific-dt-lines-when-using-bslib-and-bootstr/78141878#78141878
+    DT::formatStyle(
+      columns = 1:ncol(data[[batch]]),
+      target = "cell",
+      color = DT::JS("\"unset\""),
+      backgroundColor = DT::JS("\"unset\"")
+    ) |>
     DT::formatStyle(columns = "RSD",
                     target = "row", # not working, color is not working
                     fontWeight = DT::styleInterval(cuts = rsd_limit,
