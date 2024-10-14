@@ -1,6 +1,6 @@
 Package: QClipidyzeR
 Title: QC lipidyzer data
-Version: 0.9.9023
+Version: 0.9.9024
 Authors@R: 
     person("Rico", "Derks", , "r.j.e.derks@lumc.nl", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-8920-7133"))
@@ -8,6 +8,7 @@ Description: Have a quick look at lipidyzer data and determine how well
     the study was measured.
 License: GPL (>= 3)
 Imports: 
+    bsicons,
     bslib,
     config (>= 0.3.1),
     dplyr,
