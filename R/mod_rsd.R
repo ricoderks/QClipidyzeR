@@ -83,7 +83,8 @@ mod_rsd_server <- function(id, r, sheet){
       shiny::req(r$rsd_data)
 
       if(!is.null(r$rsd_data[[sheet]])) {
-        table_DT <- create_rsd_table(data = r$rsd_data[[sheet]])
+        table_DT <- create_rsd_table(data = r$rsd_data[[sheet]],
+                                     batch = input$select_histogram)
         table_DT
       }
     })

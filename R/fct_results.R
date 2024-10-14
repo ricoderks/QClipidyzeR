@@ -126,7 +126,8 @@ create_rsd_hist <- function(data = NULL,
 #'
 #' @description Create nice table with RSD values.
 #'
-#' @param data data.frame, with all rsd values
+#' @param data data.frame, with all rsd values.
+#' @param batch character(1), show the tables for all data or per batch.
 #'
 #' @return datatable object
 #'
@@ -136,10 +137,14 @@ create_rsd_hist <- function(data = NULL,
 #'
 #' @noRd
 #'
-create_rsd_table <- function(data = NULL) {
-  dt_table <- DT::datatable(data,
-                            options = list(pageLength = 20,
-                                           dom = "tr")) |>
+create_rsd_table <- function(data = NULL,
+                             batch = c("overall", "batch")) {
+  num_pages <- length(unique(data[[batch]]$lipid))
+
+  dt_table <- DT::datatable(data[[batch]],
+                            options = list(pageLength = num_pages,
+                                           dom = "trp"),
+                            rownames = FALSE) |>
     DT::formatRound(columns = c("mean", "stdev"),
                     digits = 1) |>
     DT::formatPercentage(columns = "rsd",
