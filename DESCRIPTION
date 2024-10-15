@@ -21,6 +21,7 @@ Imports:
     RColorBrewer,
     readxl,
     rlang,
+    rmarkdown,
     sessioninfo,
     shiny (>= 1.7.3),
     shinybusy,

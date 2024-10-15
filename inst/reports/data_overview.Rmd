@@ -1,0 +1,42 @@
+---
+title: "Data overview"
+data: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
+
+library(gt)
+library(ComplexHeatmap)
+library(patchwork)
+library(sessioninfo)
+
+files <- params$files
+clean_data <- params$clean_data
+rsd_data <- params$rsd_data
+trend_data <- params$trend_data
+pca_model <- params$pca_model
+meta_columns <- params$meta_columns
+```
+
+# Settings
+
+```{r data_settings}
+params$files
+```
+
+# Overview {.tabset}
+
+
+# Session info
+
+```{r session_info}
+session_info()
+```
+
