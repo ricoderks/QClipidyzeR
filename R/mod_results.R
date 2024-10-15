@@ -193,7 +193,7 @@ mod_results_server <- function(id, r){
         e <- new.env()
 
         e$params <- list(
-          files = r$files,
+          settings = r$settings,
           clean_data = r$clean_data,
           rsd_data = r$rsd_data,
           trend_data = r$trend_data,

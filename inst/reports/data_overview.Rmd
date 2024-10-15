@@ -13,26 +13,340 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE)
 
 library(gt)
+library(DT)
 library(ComplexHeatmap)
 library(patchwork)
 library(sessioninfo)
 
-files <- params$files
+files <- params$settings$files
+batches <- params$settings$batches
+sampleid_col <- params$settings$sampleid_col
+sampletype_col <- params$settings$sampletype_col
+qc_regex <- params$settings$qc_regex
+sample_regex <- params$settings$sample_regex
 clean_data <- params$clean_data
 rsd_data <- params$rsd_data
 trend_data <- params$trend_data
 pca_model <- params$pca_model
 meta_columns <- params$meta_columns
+
+sheet_names = c("Lipid Species Conc (nmol_g)",
+                "Lipid Species Composition (%)",
+                "Lipid Class Conc (nmol_g)",
+                "Lipid Class Composition (%)",
+                "Fatty Acid Conc (nmol_g)",
+                "Fatty Acid Composition (%)")
 ```
 
 # Settings
 
 ```{r data_settings}
-params$files
+data.frame(
+  "Parameter" = c(
+    "Files",
+    "Batches",
+    "Meta columns",
+    "Sample ID column",
+    "Sample type column",
+    "QC reg. expr.",
+    "Sample reg. expr."
+  ),
+  "Value" = c(
+    paste(files$name, collapse = "\n"),
+    paste(batches, collapse = ", "),
+    paste(meta_columns, collapse = ", "),
+    sampleid_col,
+    sampletype_col,
+    qc_regex,
+    sample_regex
+  )
+) |> 
+  gt()
 ```
 
 # Overview {.tabset}
 
+## Lipid Species Conc (nmol_g) {.tabset}
+
+```{r}
+a <- 1
+```
+
+### RSD {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "batch")
+```
+
+### Trend {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "batch")
+```
+
+### PCA
+
+```{r fig.width=10}
+scores_plot(model = pca_model[[a]],
+            meta_data = clean_data[[a]][, meta_columns],
+            batch = 1:length(batches),
+            sample_type = c("qc", "sample"))
+```
+
+## Lipid Species Composition (%) {.tabset}
+
+```{r}
+a <- 2
+```
+
+### RSD {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "batch")
+```
+
+### Trend {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "batch")
+```
+
+### PCA
+
+```{r fig.width=10}
+scores_plot(model = pca_model[[a]],
+            meta_data = clean_data[[a]][, meta_columns],
+            batch = 1:length(batches),
+            sample_type = c("qc", "sample"))
+```
+
+## Lipid Class Conc (nmol_g) {.tabset}
+
+```{r}
+a <- 3
+```
+
+### RSD {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+create_rsd_table(data = rsd_data[[a]],
+                 batch = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+create_rsd_table(data = rsd_data[[a]],
+                 batch = "batch")
+```
+
+### Trend {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "batch")
+```
+
+### PCA
+
+```{r fig.width=10}
+scores_plot(model = pca_model[[a]],
+            meta_data = clean_data[[a]][, meta_columns],
+            batch = 1:length(batches),
+            sample_type = c("qc", "sample"))
+```
+
+## Lipid Class Composition (%) {.tabset}
+
+```{r}
+a <- 4
+```
+
+### RSD {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+create_rsd_table(data = rsd_data[[a]],
+                 batch = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+create_rsd_table(data = rsd_data[[a]],
+                 batch = "batch")
+```
+
+### Trend {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "batch")
+```
+
+### PCA
+
+```{r fig.width=10}
+scores_plot(model = pca_model[[a]],
+            meta_data = clean_data[[a]][, meta_columns],
+            batch = 1:length(batches),
+            sample_type = c("qc", "sample"))
+```
+
+## Fatty Acid Conc (nmol_g) {.tabset}
+
+```{r}
+a <- 5
+```
+
+### RSD {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "batch")
+```
+
+### Trend {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "batch")
+```
+
+### PCA
+
+```{r fig.width=10}
+scores_plot(model = pca_model[[a]],
+            meta_data = clean_data[[a]][, meta_columns],
+            batch = 1:length(batches),
+            sample_type = c("qc", "sample"))
+```
+
+## Fatty Acid Composition (%) {.tabset}
+
+```{r}
+a <- 6
+```
+
+### RSD {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+create_rsd_hist(data = rsd_data[[a]],
+                batch = "batch")
+```
+
+### Trend {.tabset}
+
+#### Overall
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "overall")
+```
+
+#### Per batch
+
+```{r fig.width=10}
+trend_plot(data = trend_data[[a]],
+           trend = "batch")
+```
+
+### PCA
+
+```{r fig.width=10}
+scores_plot(model = pca_model[[a]],
+            meta_data = clean_data[[a]][, meta_columns],
+            batch = 1:length(batches),
+            sample_type = c("qc", "sample"))
+```
 
 # Session info
 

@@ -7,26 +7,33 @@
 app_server <- function(input, output, session) {
   # Your application server logic
 
-  r <- reactiveValues(files = NULL,
-                      all_data = NULL,
-                      clean_data = NULL,
-                      rsd_data = vector("list", 6),
-                      trend_data = vector("list", 6),
-                      pca_model = vector("list", 6),
-                      meta_columns = NULL,
-                      sheet_names = c("Lipid Species Conc (nmol_g)",
-                                      "Lipid Species Composition (%)",
-                                      "Lipid Class Conc (nmol_g)",
-                                      "Lipid Class Composition (%)",
-                                      "Fatty Acid Conc (nmol_g)",
-                                      "Fatty Acid Composition (%)"),
-                      sheet_names_short = c("Species conc.",
-                                            "Species comp.",
-                                            "Classes conc.",
-                                            "Classes comp.",
-                                            "FA conc.",
-                                            "FA comp."),
-                      errors = NULL)
+  r <- reactiveValues(
+    settings = list(files = NULL,
+                    batches = NULL,
+                    sampleid_col = NULL,
+                    sampletype_col = NULL,
+                    qc_regex = NULL,
+                    sample_regex = NULL),
+    all_data = NULL,
+    clean_data = NULL,
+    rsd_data = vector("list", 6),
+    trend_data = vector("list", 6),
+    pca_model = vector("list", 6),
+    meta_columns = NULL,
+    sheet_names = c("Lipid Species Conc (nmol_g)",
+                    "Lipid Species Composition (%)",
+                    "Lipid Class Conc (nmol_g)",
+                    "Lipid Class Composition (%)",
+                    "Fatty Acid Conc (nmol_g)",
+                    "Fatty Acid Composition (%)"),
+    sheet_names_short = c("Species conc.",
+                          "Species comp.",
+                          "Classes conc.",
+                          "Classes comp.",
+                          "FA conc.",
+                          "FA comp."),
+    errors = NULL
+  )
 
   # import files
   mod_files_server(id = "file",

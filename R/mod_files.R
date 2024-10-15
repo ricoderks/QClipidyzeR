@@ -98,11 +98,12 @@ mod_files_server <- function(id, r){
           print(batches)
 
           # sort the files according to the batch order
-          r$files <- my_files[order(batches), ]
+          r$settings$files <- my_files[order(batches), ]
+          r$settings$batches <- batches
         }
 
         # read all the files
-        r$all_data <- read_files(files = r$files,
+        r$all_data <- read_files(files = r$settings$files,
                                  sheet_names = r$sheet_names)
 
         r$meta_columns <-
@@ -147,6 +148,12 @@ mod_files_server <- function(id, r){
                                             text = "Processing data....")
 
         print("Start data import")
+
+        r$settings$sampleid_col <- input$sampleid_col
+        r$settings$sampletype_col <- input$sampletype_col
+        r$settings$qc_regex <- input$qc_regex
+        r$settings$sample_regex <- input$sample_regex
+
         # clean the data, every column is kept (for now)
         # only keep pooled samples and samples
         # remove features which are NOT present in all pooled samples
@@ -207,13 +214,13 @@ mod_files_server <- function(id, r){
 
     # show the imported file names
     output$files_imported <- shiny::renderUI({
-      shiny::req(r$files)
+      shiny::req(r$settings$files)
 
-      if(!is.null(r$files)) {
+      if(!is.null(r$settings$files)) {
         my_list <- "<ul>"
 
-        for(a in 1:length(r$files$name)) {
-          my_list <- paste(my_list, "<li>", r$files$name[a], "</li>")
+        for(a in 1:length(r$settings$files$name)) {
+          my_list <- paste(my_list, "<li>", r$settings$files$name[a], "</li>")
         }
 
         my_list <- paste(my_list, "</ul>")
