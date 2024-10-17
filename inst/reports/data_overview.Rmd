@@ -10,7 +10,8 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
-                      message = FALSE)
+                      message = FALSE,
+                      fig.width = 10)
 
 library(gt)
 library(DT)
@@ -28,6 +29,7 @@ clean_data <- params$clean_data
 rsd_data <- params$rsd_data
 trend_data <- params$trend_data
 pca_model <- params$pca_model
+deviation_data <- params$deviation_data
 meta_columns <- params$meta_columns
 
 sheet_names = c("Lipid Species Conc (nmol_g)",
@@ -76,37 +78,53 @@ a <- 1
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "batch")
+```
+
+### Deviation {.tabset}
+
+#### Overall
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "overall")
+```
+
+#### Batch
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "batch")
 ```
 
 ### Trend {.tabset}
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "batch")
 ```
 
 ### PCA
 
-```{r fig.width=10}
+```{r}
 scores_plot(model = pca_model[[a]],
             meta_data = clean_data[[a]][, meta_columns],
             batch = 1:length(batches),
@@ -123,37 +141,53 @@ a <- 2
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "batch")
+```
+
+### Deviation {.tabset}
+
+#### Overall
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "overall")
+```
+
+#### Batch
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "batch")
 ```
 
 ### Trend {.tabset}
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "batch")
 ```
 
 ### PCA
 
-```{r fig.width=10}
+```{r}
 scores_plot(model = pca_model[[a]],
             meta_data = clean_data[[a]][, meta_columns],
             batch = 1:length(batches),
@@ -170,37 +204,53 @@ a <- 3
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 create_rsd_table(data = rsd_data[[a]],
                  batch = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 create_rsd_table(data = rsd_data[[a]],
                  batch = "batch")
+```
+
+### Deviation {.tabset}
+
+#### Overall
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "overall")
+```
+
+#### Batch
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "batch")
 ```
 
 ### Trend {.tabset}
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "batch")
 ```
 
 ### PCA
 
-```{r fig.width=10}
+```{r}
 scores_plot(model = pca_model[[a]],
             meta_data = clean_data[[a]][, meta_columns],
             batch = 1:length(batches),
@@ -217,37 +267,53 @@ a <- 4
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 create_rsd_table(data = rsd_data[[a]],
                  batch = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 create_rsd_table(data = rsd_data[[a]],
                  batch = "batch")
+```
+
+### Deviation {.tabset}
+
+#### Overall
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "overall")
+```
+
+#### Batch
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "batch")
 ```
 
 ### Trend {.tabset}
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "batch")
 ```
 
 ### PCA
 
-```{r fig.width=10}
+```{r}
 scores_plot(model = pca_model[[a]],
             meta_data = clean_data[[a]][, meta_columns],
             batch = 1:length(batches),
@@ -264,37 +330,53 @@ a <- 5
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "batch")
+```
+
+### Deviation {.tabset}
+
+#### Overall
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "overall")
+```
+
+#### Batch
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "batch")
 ```
 
 ### Trend {.tabset}
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "batch")
 ```
 
 ### PCA
 
-```{r fig.width=10}
+```{r}
 scores_plot(model = pca_model[[a]],
             meta_data = clean_data[[a]][, meta_columns],
             batch = 1:length(batches),
@@ -311,37 +393,53 @@ a <- 6
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 create_rsd_hist(data = rsd_data[[a]],
                 batch = "batch")
+```
+
+### Deviation {.tabset}
+
+#### Overall
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "overall")
+```
+
+#### Batch
+
+```{r}
+deviation_plot(data = deviation_data[[a]],
+                     trend = "batch")
 ```
 
 ### Trend {.tabset}
 
 #### Overall
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "overall")
 ```
 
 #### Per batch
 
-```{r fig.width=10}
+```{r}
 trend_plot(data = trend_data[[a]],
            trend = "batch")
 ```
 
 ### PCA
 
-```{r fig.width=10}
+```{r}
 scores_plot(model = pca_model[[a]],
             meta_data = clean_data[[a]][, meta_columns],
             batch = 1:length(batches),

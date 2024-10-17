@@ -198,6 +198,7 @@ mod_results_server <- function(id, r){
           rsd_data = r$rsd_data,
           trend_data = r$trend_data,
           pca_model = r$pca_model,
+          deviation_data = r$deviation_data,
           meta_columns = r$meta_columns
         )
 

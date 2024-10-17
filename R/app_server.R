@@ -18,6 +18,7 @@ app_server <- function(input, output, session) {
     clean_data = NULL,
     rsd_data = vector("list", 6),
     trend_data = vector("list", 6),
+    deviation_data = vector("list", 6),
     pca_model = vector("list", 6),
     meta_columns = NULL,
     sheet_names = c("Lipid Species Conc (nmol_g)",
